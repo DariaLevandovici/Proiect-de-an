@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* opțional: câteva resetări utile */
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
