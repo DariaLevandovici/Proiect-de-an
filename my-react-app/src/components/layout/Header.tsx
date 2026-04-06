@@ -5,7 +5,7 @@ import { useApp } from '../../context/AppContext';
 
 export function Header() {
   const navigate = useNavigate();
-  const { cart, user, logout } = useApp();
+  const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
   const [cartCount] = useState(3);
 
   const handleLogout = () => {
@@ -69,6 +69,8 @@ export function Header() {
               <input
                 type="text"
                 placeholder="Search dishes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full"
               />
             </div>
