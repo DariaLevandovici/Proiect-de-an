@@ -1,0 +1,230 @@
+import { useState } from 'react';
+import { useApp } from '../context/AppContext';
+import { LogOut, ChefHat, Eye, AlertTriangle, BookOpen } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { menuItems } from '../data/menuData';
+
+export function CookDashboard() {
+  const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
+  const navigate = useNavigate();
+  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+  const [menuSearchTerm, setMenuSearchTerm] = useState('');
+  const [menuFilter, setMenuFilter] = useState('All');
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const handlePickOrder = (orderId: string) => {
+    setSelectedOrder(orderId);
+    updateOrderStatus(orderId, 'in-preparation');
+  };
+
+  const handleCompleteOrder = (orderId: string) => {
+    updateOrderStatus(orderId, 'ready');
+    setSelectedOrder(null);
+    
+    // Simulate inventory reduction
+    const randomItem = inventory[Math.floor(Math.random() * inventory.length)];
+    if (randomItem) {
+      updateInventory(randomItem.id, Math.max(0, randomItem.quantity - 2));
+    }
+  };
+
+  const incomingOrders = orders.filter(o => o.status === 'confirmed');
+  const preparingOrders = orders.filter(o => o.status === 'in-preparation');
+  const lowStockItems = inventory.filter(item => item.quantity <= item.minStock);
+
+  // Filter menu items for availability
+  const filteredMenuItems = menuItems.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(menuSearchTerm.toLowerCase());
+    const matchesFilter = menuFilter === 'All' || 
+                         (menuFilter === 'Available' && !unavailableItems.includes(item.name)) ||
+                         (menuFilter === 'Unavailable' && unavailableItems.includes(item.name));
+    return matchesSearch && matchesFilter;
+  });
+
+  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+
+  return (
+    <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">
+      <div className="container mx-auto px-6 max-w-7xl">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Cook Dashboard</h1>
+            <p className="text-gray-400">Welcome, {user?.name}</p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/dashboard/cook/recipes')}
+              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+            >
+              <BookOpen className="w-4 h-4" />
+              Recipes
+            </button>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </button>
+          </div>
+        </div>
+
+        {/* Low Stock Alert */}
+        {lowStockItems.length > 0 && (
+          <div className="mb-8 bg-yellow-900/30 border border-yellow-600 rounded-2xl p-6">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-yellow-400 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="text-xl font-bold text-yellow-400 mb-2">Low Stock Alert</h3>
+                <div className="flex flex-wrap gap-2">
+                  {lowStockItems.map(item => (
+                    <span key={item.id} className="bg-yellow-900/50 text-yellow-300 px-3 py-1 rounded-full text-sm">
+                      {item.name}: {item.quantity} {item.unit}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Incoming Orders */}
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">Incoming Orders</h2>
+            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+              {incomingOrders.length === 0 ? (
+                <div className="bg-[#242424] rounded-2xl p-8 border border-gray-800 text-center">
+                  <p className="text-gray-400">No incoming orders</p>
+                </div>
+              ) : (
+                incomingOrders.map(order => (
+                  <div key={order.id} className="bg-[#242424] rounded-2xl p-6 border border-gray-800 hover:border-blue-700 transition-all">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-1">Order #{order.id}</h3>
+                        <p className="text-gray-400 text-sm">
+                          {new Date(order.createdAt).toLocaleTimeString()}
+                        </p>
+                      </div>
+                      <span className="bg-yellow-900/30 text-yellow-400 px-3 py-1 rounded-full text-xs font-semibold">
+                        NEW
+                      </span>
+                    </div>
+
+                    {/* Order Items (mock) */}
+                    <div className="mb-4 p-3 bg-gray-800 rounded-lg">
+                      <p className="text-gray-400 text-sm">Items: {order.items.length || 3} dishes</p>
+                      <p className="text-white text-sm mt-1">Type: <span className="capitalize">{order.type}</span></p>
+                    </div>
+
+                    <button
+                      onClick={() => handlePickOrder(order.id)}
+                      className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                    >
+                      <ChefHat className="w-4 h-4" />
+                      Start Preparing
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Orders in Preparation */}
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">In Preparation</h2>
+            <div className="space-y-4 max-h-[600px] overflow-y-auto">
+              {preparingOrders.length === 0 ? (
+                <div className="bg-[#242424] rounded-2xl p-8 border border-gray-800 text-center">
+                  <p className="text-gray-400">No orders being prepared</p>
+                </div>
+              ) : (
+                preparingOrders.map(order => (
+                  <div key={order.id} className="bg-[#242424] rounded-2xl p-6 border border-blue-600">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-1">Order #{order.id}</h3>
+                        <p className="text-gray-400 text-sm">
+                          Started: {new Date(order.createdAt).toLocaleTimeString()}
+                        </p>
+                      </div>
+                      <span className="bg-blue-900/30 text-blue-400 px-3 py-1 rounded-full text-xs font-semibold animate-pulse">
+                        COOKING
+                      </span>
+                    </div>
+
+                    {/* Waiter Comments */}
+                    <div className="mb-4 p-3 bg-gray-800 rounded-lg">
+                      <p className="text-gray-400 text-xs mb-1">Waiter Notes:</p>
+                      <p className="text-white text-sm">Extra spicy, no onions</p>
+                    </div>
+
+                    <button
+                      onClick={() => handleCompleteOrder(order.id)}
+                      className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full transition-colors"
+                    >
+                      Mark as Ready
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Menu Item Availability */}
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Menu Availability</h2>
+          
+          {/* Search and Filter */}
+          <div className="mb-6 flex gap-4">
+            <input
+              type="text"
+              placeholder="Search menu items..."
+              value={menuSearchTerm}
+              onChange={(e) => setMenuSearchTerm(e.target.value)}
+              className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
+            />
+            <select
+              value={menuFilter}
+              onChange={(e) => setMenuFilter(e.target.value)}
+              className="bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
+            >
+              <option value="All">All Items</option>
+              <option value="Available">Available Only</option>
+              <option value="Unavailable">Unavailable Only</option>
+            </select>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {filteredMenuItems.map(item => {
+              const isUnavailable = unavailableItems.includes(item.name);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setItemAvailability(item.name, isUnavailable)}
+                  className={`p-4 rounded-lg border-2 transition-all text-left ${
+                    isUnavailable
+                      ? 'bg-red-900/30 border-red-600'
+                      : 'bg-green-900/30 border-green-600'
+                  }`}
+                >
+                  <p className="text-white font-bold text-sm mb-1">{item.name}</p>
+                  <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
+                    {isUnavailable ? 'Unavailable' : 'Available'}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
