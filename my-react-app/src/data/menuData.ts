@@ -41,7 +41,6 @@ export const menuItems: MenuItem[] = [
     ingredients: ['flour', 'milk', 'eggs', 'berries', 'maple syrup'],
     dietary: ['vegetarian']
   },
-
   // Starters
   {
     id: 201,
