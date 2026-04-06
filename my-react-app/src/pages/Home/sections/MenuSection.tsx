@@ -32,22 +32,24 @@ export function MenuSection() {
               {filteredItems.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700"
+                  className="bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700 flex flex-col h-full"
                 >
-                  <div className="h-48 overflow-hidden">
+                  <div className="h-48 overflow-hidden flex-shrink-0">
                     <img
                       src={item.image}
                       alt={item.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 flex flex-col flex-grow">
                     <div className="flex justify-between items-start mb-3">
                       <h4 className="text-xl font-bold text-white">{item.name}</h4>
                       <span className="text-blue-400 font-bold text-lg">{item.price} MDL</span>
                     </div>
                     <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
-                    <AddToCartButton item={item} />
+                    <div className="mt-auto">
+                      <AddToCartButton item={item} />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -78,22 +80,24 @@ export function MenuSection() {
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700"
+                    className="bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700 flex flex-col h-full"
                   >
-                    <div className="h-48 overflow-hidden">
+                    <div className="h-48 overflow-hidden flex-shrink-0">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="p-6">
+                    <div className="p-6 flex flex-col flex-grow">
                       <div className="flex justify-between items-start mb-3">
                         <h4 className="text-xl font-bold text-white">{item.name}</h4>
                         <span className="text-blue-400 font-bold text-lg">{item.price} MDL</span>
                       </div>
                       <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
-                      <AddToCartButton item={item} />
+                      <div className="mt-auto">
+                        <AddToCartButton item={item} />
+                      </div>
                     </div>
                   </div>
                 ))}

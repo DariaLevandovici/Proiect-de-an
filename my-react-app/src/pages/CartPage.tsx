@@ -14,9 +14,6 @@ export function CartPage() {
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
-    // In production, this would process payment
-    alert('Payment processed successfully!');
-    clearCart();
     navigate('/order');
   };
 
