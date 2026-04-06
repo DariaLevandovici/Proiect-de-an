@@ -74,6 +74,8 @@ interface AppContextType {
   updateInventory: (id: string, quantity: number) => void;
   unavailableItems: string[];
   setItemAvailability: (itemName: string, available: boolean) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -109,6 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     { id: 'INV005', name: 'Salmon', quantity: 18, unit: 'kg', minStock: 8 },
   ]);
   const [unavailableItems, setUnavailableItems] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const login = (email: string, password: string, role: 'client' | 'staff') => {
     // Mock login - in production, this would call an API
@@ -221,7 +224,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       inventory,
       updateInventory,
       unavailableItems,
-      setItemAvailability
+      setItemAvailability,
+      searchQuery,
+      setSearchQuery
     }}>
       {children}
     </AppContext.Provider>
