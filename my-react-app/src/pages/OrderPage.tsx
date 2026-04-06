@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Truck, ShoppingBag, UtensilsCrossed, MapPin, Clock, X, CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { useNavigate } from 'react-router';
 
 type OrderType = 'delivery' | 'takeaway' | 'dine-in';
 type OrderStatus = 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
@@ -16,6 +17,7 @@ const statusLabels: Record<OrderStatus, string> = {
 
 export function OrderPage() {
   const { orders, cancelOrder, cart, addOrder, clearCart } = useApp();
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<OrderType>('delivery');
   const [address, setAddress] = useState('');
   const [errors, setErrors] = useState<string[]>([]);
@@ -133,23 +135,33 @@ export function OrderPage() {
             <span className="text-blue-400 font-bold text-lg">{cartTotal} MDL</span>
           </div>
           {cart.length > 0 ? (
-            <ul className="space-y-2 mb-6">
-              {cart.map(item => (
-                <li key={item.id} className="flex justify-between text-sm text-gray-300">
-                  <span>{item.name} × {item.quantity}</span>
-                  <span>{item.price * item.quantity} MDL</span>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className="space-y-2 mb-6">
+                {cart.map(item => (
+                  <li key={item.id} className="flex justify-between text-sm text-gray-300">
+                    <span>{item.name} × {item.quantity}</span>
+                    <span>{item.price * item.quantity} MDL</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={handlePlaceOrder}
+                className="w-full bg-blue-700 hover:bg-blue-600 active:scale-95 text-white py-4 rounded-full font-bold text-lg transition-all"
+              >
+                Place Order
+              </button>
+            </>
           ) : (
-            <p className="text-gray-500 text-sm mb-6">No items in cart yet. Visit the Menu to add items.</p>
+            <>
+              <p className="text-gray-500 text-sm mb-6">No items in cart yet. Visit the Menu to add items.</p>
+              <button
+                onClick={() => navigate('/menu')}
+                className="w-full bg-gray-800 hover:bg-gray-700 active:scale-95 text-white py-4 rounded-full font-bold text-lg transition-all"
+              >
+                Browse Menu
+              </button>
+            </>
           )}
-          <button
-            onClick={handlePlaceOrder}
-            className="w-full bg-blue-700 hover:bg-blue-600 active:scale-95 text-white py-4 rounded-full font-bold text-lg transition-all"
-          >
-            Place Order
-          </button>
         </div>
 
         {/* Active Orders */}
