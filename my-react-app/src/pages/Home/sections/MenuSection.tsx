@@ -1,11 +1,9 @@
-import { Plus } from 'lucide-react';
-import { useApp } from '../../../context/AppContext';
 import { menuItems } from '../../../data/menuData';
+import { AddToCartButton } from '../../../components/AddToCartButton';
 
 const categories = ['Starters', 'Main Dishes', 'Desserts'];
 
 export function MenuSection() {
-  const { addToCart } = useApp();
 
   return (
     <section id="menu" className="py-16 bg-[#1a1a1a]">
@@ -42,18 +40,7 @@ export function MenuSection() {
                         <span className="text-blue-400 font-bold text-lg">{item.price} MDL</span>
                       </div>
                       <p className="text-gray-400 text-sm mb-4 line-clamp-2">{item.description}</p>
-                      <button 
-                        onClick={() => addToCart({
-                          id: item.id,
-                          name: item.name,
-                          price: item.price,
-                          image: item.image
-                        })}
-                        className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
-                      >
-                        <Plus className="w-4 h-4" />
-                        Add to Cart
-                      </button>
+                      <AddToCartButton item={item} />
                     </div>
                   </div>
                 ))}
