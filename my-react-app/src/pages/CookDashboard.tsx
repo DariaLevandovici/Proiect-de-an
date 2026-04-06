@@ -45,7 +45,7 @@ export function CookDashboard() {
     return matchesSearch && matchesFilter;
   });
 
-  const categories = ['All', 'Breakfast', 'Appetizers', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">

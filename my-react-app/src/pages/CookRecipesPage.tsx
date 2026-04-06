@@ -3,13 +3,22 @@ import { ArrowLeft, Clock, Users, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { menuItems } from '../data/menuData';
 
+type MenuItem = typeof menuItems[0];
+
+interface RecipeItem extends MenuItem {
+  prepTime: string;
+  servings: number;
+  difficulty: string;
+  instructions: string[];
+}
+
 export function CookRecipesPage() {
   const navigate = useNavigate();
   const [recipeSearchTerm, setRecipeSearchTerm] = useState('');
   const [recipeCategory, setRecipeCategory] = useState('All');
-  const [selectedRecipe, setSelectedRecipe] = useState<typeof menuItems[0] | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeItem | null>(null);
 
-  const categories = ['All', 'Breakfast', 'Appetizers', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
 
   // Enhanced recipes with detailed preparation instructions
   const recipesWithInstructions = menuItems.map(item => ({
@@ -23,7 +32,7 @@ export function CookRecipesPage() {
   function getPreparationTime(category: string): string {
     const times: { [key: string]: string } = {
       'Breakfast': '15-20 min',
-      'Appetizers': '20-25 min',
+      'Starters': '20-25 min',
       'Vegan': '25-30 min',
       'Main Dishes': '35-45 min',
       'Desserts': '30-40 min',
@@ -39,7 +48,7 @@ export function CookRecipesPage() {
   function getDifficulty(category: string): string {
     const difficulty: { [key: string]: string } = {
       'Breakfast': 'Easy',
-      'Appetizers': 'Easy',
+      'Starters': 'Easy',
       'Vegan': 'Medium',
       'Main Dishes': 'Medium',
       'Desserts': 'Hard',
@@ -91,7 +100,7 @@ export function CookRecipesPage() {
         'Garnish with fresh basil and serve with pasta'
       ];
     }
-    
+
     // Breakfast
     else if (category === 'Breakfast') {
       return [
@@ -107,9 +116,9 @@ export function CookRecipesPage() {
         'Serve with toast and accompaniments'
       ];
     }
-    
-    // Appetizers
-    else if (category === 'Appetizers') {
+
+    // Starters
+    else if (category === 'Starters') {
       return [
         'Prepare and wash all fresh ingredients',
         'Preheat oven to 180°C if baking is required',
@@ -123,7 +132,7 @@ export function CookRecipesPage() {
         'Garnish and serve with appropriate dipping sauce'
       ];
     }
-    
+
     // Vegan
     else if (category === 'Vegan') {
       return [
@@ -139,7 +148,7 @@ export function CookRecipesPage() {
         'Serve over quinoa, rice, or noodles'
       ];
     }
-    
+
     // Desserts
     else if (category === 'Desserts') {
       return [
@@ -155,7 +164,7 @@ export function CookRecipesPage() {
         'Cool completely before frosting or decorating'
       ];
     }
-    
+
     // Drinks
     else if (category === 'Drinks') {
       return [
@@ -170,7 +179,7 @@ export function CookRecipesPage() {
         'Add straws or stirrers as needed'
       ];
     }
-    
+
     // Default instructions
     return [
       'Prepare all ingredients and equipment',
@@ -186,7 +195,7 @@ export function CookRecipesPage() {
 
   const filteredRecipes = recipesWithInstructions.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(recipeSearchTerm.toLowerCase()) ||
-                         item.ingredients.some(ing => ing.toLowerCase().includes(recipeSearchTerm.toLowerCase()));
+      item.ingredients.some(ing => ing.toLowerCase().includes(recipeSearchTerm.toLowerCase()));
     const matchesCategory = recipeCategory === 'All' || item.category === recipeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -222,8 +231,8 @@ export function CookRecipesPage() {
             <div className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800">
               {/* Recipe Header */}
               <div className="relative h-80">
-                <img 
-                  src={selectedRecipe.image} 
+                <img
+                  src={selectedRecipe.image}
                   alt={selectedRecipe.name}
                   className="w-full h-full object-cover"
                 />
@@ -273,7 +282,7 @@ export function CookRecipesPage() {
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-4">Preparation Instructions</h3>
                   <div className="space-y-4">
-                    {selectedRecipe.instructions.map((instruction, idx) => (
+                    {selectedRecipe.instructions.map((instruction: string, idx: number) => (
                       <div key={idx} className="flex gap-4 bg-gray-800 rounded-xl p-4">
                         <div className="flex-shrink-0 w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center">
                           <span className="text-white font-bold text-sm">{idx + 1}</span>
@@ -284,17 +293,6 @@ export function CookRecipesPage() {
                   </div>
                 </div>
 
-                {/* Tips */}
-                <div className="mt-8 bg-blue-900/20 border border-blue-800 rounded-xl p-6">
-                  <h4 className="text-lg font-bold text-blue-400 mb-2">Chef's Tips</h4>
-                  <ul className="space-y-2 text-gray-300 text-sm">
-                    <li>• Always read through the entire recipe before starting</li>
-                    <li>• Prepare and measure all ingredients before cooking (mise en place)</li>
-                    <li>• Use fresh, high-quality ingredients for best results</li>
-                    <li>• Adjust seasoning to taste throughout the cooking process</li>
-                    <li>• Clean as you go to maintain an organized workspace</li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
@@ -315,11 +313,10 @@ export function CookRecipesPage() {
                   <button
                     key={cat}
                     onClick={() => setRecipeCategory(cat)}
-                    className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${
-                      recipeCategory === cat
-                        ? 'bg-blue-700 text-white'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                    }`}
+                    className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${recipeCategory === cat
+                      ? 'bg-blue-700 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      }`}
                   >
                     {cat}
                   </button>
@@ -341,8 +338,8 @@ export function CookRecipesPage() {
                     className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800 hover:border-blue-700 transition-all text-left group"
                   >
                     <div className="aspect-video overflow-hidden">
-                      <img 
-                        src={recipe.image} 
+                      <img
+                        src={recipe.image}
                         alt={recipe.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />

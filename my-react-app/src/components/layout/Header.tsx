@@ -1,8 +1,17 @@
-import { Search, ShoppingCart, User } from 'lucide-react';
+import { Search, ShoppingCart, User, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useApp } from '../../context/AppContext';
 
 export function Header() {
+  const navigate = useNavigate();
+  const { cart, user, logout } = useApp();
   const [cartCount] = useState(3);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1a1a]/95 backdrop-blur-sm border-b border-gray-800">
@@ -10,19 +19,22 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
+            <button onClick={() => navigate('/')} className="flex items-center gap-2">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">G</span>
               </div>
               <h1 className="text-2xl font-bold text-white">GastroFlow</h1>
-            </div>
+            </button>
             
             {/* Cart */}
-            <button className="relative p-2 hover:bg-gray-800 rounded-full transition-colors">
+            <button 
+              onClick={() => navigate('/cart')}
+              className="relative p-2 hover:bg-gray-800 rounded-full transition-colors"
+            >
               <ShoppingCart className="w-6 h-6 text-gray-300" />
-              {cartCount > 0 && (
+              {cart.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
+                  {cart.length}
                 </span>
               )}
             </button>
@@ -30,18 +42,23 @@ export function Header() {
 
           {/* Central Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#reservation" className="text-gray-300 hover:text-white transition-colors">
+            <button onClick={() => navigate('/reservation')} className="text-gray-300 hover:text-white transition-colors">
               Reservation
-            </a>
-            <a href="#order" className="text-gray-300 hover:text-white transition-colors">
+            </button>
+            <button onClick={() => navigate('/order')} className="text-gray-300 hover:text-white transition-colors">
               Order
-            </a>
-            <a href="#menu" className="text-gray-300 hover:text-white transition-colors">
+            </button>
+            <button onClick={() => navigate('/menu')} className="text-gray-300 hover:text-white transition-colors">
               Meniu
-            </a>
-            <a href="#career" className="text-gray-300 hover:text-white transition-colors">
+            </button>
+            <button onClick={() => navigate('/career')} className="text-gray-300 hover:text-white transition-colors">
               Career
-            </a>
+            </button>
+            {user && user.role === 'client' && (
+              <button onClick={() => navigate('/dashboard/client')} className="text-blue-400 hover:text-blue-300 transition-colors">
+                Dashboard
+              </button>
+            )}
           </nav>
 
           {/* Right Side - Search & Login */}
@@ -56,11 +73,33 @@ export function Header() {
               />
             </div>
 
-            {/* Login Button */}
-            <button className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition-colors">
-              <User className="w-4 h-4" />
-              <span>Login</span>
-            </button>
+            {/* User Menu or Login */}
+            {user ? (
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => navigate('/account')}
+                  className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  <span className="text-sm">{user.name}</span>
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 px-4 py-2 rounded-full transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="text-sm">Logout</span>
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={() => navigate('/login')}
+                className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition-colors"
+              >
+                <User className="w-4 h-4" />
+                <span>Login</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

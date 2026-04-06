@@ -41,14 +41,13 @@ export const menuItems: MenuItem[] = [
     ingredients: ['flour', 'milk', 'eggs', 'berries', 'maple syrup'],
     dietary: ['vegetarian']
   },
-
-  // Appetizers
+  // Starters
   {
     id: 201,
     name: 'Bruschetta Classica',
     description: 'Toasted bread with tomatoes, garlic, basil and olive oil',
     price: 85,
-    category: 'Appetizers',
+    category: 'Starters',
     image: 'https://images.unsplash.com/photo-1572695157366-5e585ab2b69f?w=400&h=300&fit=crop',
     ingredients: ['bread', 'tomatoes', 'garlic', 'basil', 'olive oil'],
     dietary: ['vegan']
@@ -58,7 +57,7 @@ export const menuItems: MenuItem[] = [
     name: 'Caesar Salad',
     description: 'Romaine lettuce, parmesan, croutons, Caesar dressing',
     price: 95,
-    category: 'Appetizers',
+    category: 'Starters',
     image: 'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop',
     ingredients: ['lettuce', 'parmesan', 'croutons', 'anchovies', 'eggs'],
     dietary: []
@@ -68,8 +67,8 @@ export const menuItems: MenuItem[] = [
     name: 'Hummus Platter',
     description: 'Creamy hummus with pita bread, olives, and vegetables',
     price: 70,
-    category: 'Appetizers',
-    image: 'https://images.unsplash.com/photo-1633436251672-5c92726e8ea7?w=400&h=300&fit=crop',
+    category: 'Starters',
+    image: 'https://images.unsplash.com/photo-1683725519288-eab9fa352335?q=80&w=950&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     ingredients: ['chickpeas', 'tahini', 'lemon', 'garlic', 'pita'],
     dietary: ['vegan']
   },
@@ -101,7 +100,7 @@ export const menuItems: MenuItem[] = [
     description: 'Creamy arborio rice with wild mushrooms and herbs',
     price: 155,
     category: 'Vegan',
-    image: 'https://images.unsplash.com/photo-1476124369491-c49d2be86aeb?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1637361874063-e5e415d7bcf7?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     ingredients: ['arborio rice', 'mushrooms', 'white wine', 'vegetable stock', 'herbs'],
     dietary: ['vegan', 'gluten-free']
   },
@@ -185,7 +184,7 @@ export const menuItems: MenuItem[] = [
     description: 'New York style cheesecake with berry compote',
     price: 80,
     category: 'Desserts',
-    image: 'https://images.unsplash.com/photo-1533134242443-d4bcc42c1cb2?w=400&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1621866908241-bc59b9dbfe7c?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     ingredients: ['cream cheese', 'sugar', 'eggs', 'berries', 'graham crackers'],
     dietary: ['vegetarian']
   },
