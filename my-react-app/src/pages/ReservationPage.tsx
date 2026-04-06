@@ -161,15 +161,7 @@ export function ReservationPage() {
             </div>
           </form>
 
-          {/* Info Box */}
-          <div className="mt-8 p-6 bg-blue-900/20 border border-blue-800 rounded-lg">
-            <h3 className="text-white font-bold mb-2">Please Note:</h3>
-            <ul className="text-gray-400 text-sm space-y-1">
-              <li>• Reservations are held for 15 minutes after the booking time</li>
-              <li>• For parties of 8 or more, please call us directly</li>
-              <li>• Cancellations must be made at least 2 hours in advance</li>
-            </ul>
-          </div>
+
         </div>
       </div>
     </div>
