@@ -5,14 +5,19 @@ import { useNavigate } from 'react-router';
 export function ClientDashboard() {
   const { user, orders, reservations, logout } = useApp();
   const navigate = useNavigate();
+  const clientOrders = orders.filter(order => {
+    if (order.origin !== 'client') return false;
+    if (!user) return true;
+    return !order.createdByUserId || order.createdByUserId === user.id;
+  });
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
-  const activeOrders = orders.filter(o => o.status !== 'delivered');
-  const pastOrders = orders.filter(o => o.status === 'delivered');
+  const activeOrders = clientOrders.filter(o => o.status !== 'delivered');
+  const pastOrders = clientOrders.filter(o => o.status === 'delivered');
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">

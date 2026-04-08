@@ -67,7 +67,8 @@ export function WaiterCreateOrder() {
       total,
       status: 'draft',
       tableNumber: selectedTable,
-      comment: orderComment.trim() || undefined
+      comment: orderComment.trim() || undefined,
+      origin: 'waiter'
     });
 
     alert(`Order created for Table ${selectedTable}`);
