@@ -65,8 +65,9 @@ export function WaiterCreateOrder() {
       type: 'dine-in',
       items: orderItems as any,
       total,
-      status: 'confirmed',
-      comment: orderComment
+      status: 'draft',
+      tableNumber: selectedTable,
+      comment: orderComment.trim() || undefined
     });
 
     alert(`Order created for Table ${selectedTable}`);
