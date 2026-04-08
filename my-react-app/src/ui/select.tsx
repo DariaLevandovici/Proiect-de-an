@@ -10,47 +10,30 @@ import {
 
 import { cn } from "./utils";
 
-const MIN_DROPDOWN_OPEN_SPACE = 220;
+type DropdownSide = "top" | "bottom";
+const MIN_CONTENT_SPACE = 220;
 
-function hasEnoughSpaceBelow(element: HTMLElement | null, minHeight = MIN_DROPDOWN_OPEN_SPACE) {
-  if (!element || typeof window === "undefined") return true;
-  const rect = element.getBoundingClientRect();
-  return window.innerHeight - rect.bottom >= minHeight;
+const SelectSideContext = React.createContext<{
+  side: DropdownSide;
+  setSide: (side: DropdownSide) => void;
+} | null>(null);
+
+function getPreferredSide(trigger: HTMLElement | null): DropdownSide {
+  if (!trigger || typeof window === "undefined") return "bottom";
+  const rect = trigger.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+  return spaceBelow >= MIN_CONTENT_SPACE ? "bottom" : "top";
 }
 
 function Select({
-  open: controlledOpen,
-  defaultOpen,
-  onOpenChange,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
-  const isControlled = controlledOpen !== undefined;
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) {
-      const trigger = (document.activeElement as HTMLElement | null)?.closest(
-        '[data-slot="select-trigger"]',
-      ) as HTMLElement | null;
-
-      if (!hasEnoughSpaceBelow(trigger)) {
-        onOpenChange?.(false);
-        if (!isControlled) setInternalOpen(false);
-        return;
-      }
-    }
-
-    onOpenChange?.(nextOpen);
-    if (!isControlled) setInternalOpen(nextOpen);
-  };
+  const [side, setSide] = React.useState<DropdownSide>("bottom");
 
   return (
-    <SelectPrimitive.Root
-      data-slot="select"
-      open={isControlled ? controlledOpen : internalOpen}
-      onOpenChange={handleOpenChange}
-      {...props}
-    />
+    <SelectSideContext.Provider value={{ side, setSide }}>
+      <SelectPrimitive.Root data-slot="select" {...props} />
+    </SelectSideContext.Provider>
   );
 }
 
@@ -70,16 +53,35 @@ function SelectTrigger({
   className,
   size = "default",
   children,
+  onPointerDown,
+  onKeyDown,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
   size?: "sm" | "default";
 }) {
+  const sideContext = React.useContext(SelectSideContext);
+
   return (
     <SelectPrimitive.Trigger
       data-slot="select-trigger"
       data-size={size}
+      data-dropdown-side={sideContext?.side ?? "bottom"}
+      onPointerDown={(event) => {
+        sideContext?.setSide(getPreferredSide(event.currentTarget));
+        onPointerDown?.(event);
+      }}
+      onKeyDown={(event) => {
+        const opensMenu = event.key === "Enter" || event.key === " " || event.key === "ArrowDown";
+        if (opensMenu) {
+          sideContext?.setSide(getPreferredSide(event.currentTarget));
+        }
+        onKeyDown?.(event);
+      }}
       className={cn(
-        "border-gray-700 data-[placeholder]:text-gray-500 [&_svg:not([class*='text-'])]:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/35 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex w-full items-center justify-between gap-2 rounded-xl border bg-[#1f1f1f] px-4 py-2 text-sm text-white whitespace-nowrap transition-[color,box-shadow,border-color,border-radius] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[state=open]:rounded-b-none data-[state=open]:border-b-0 data-[size=default]:h-11 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "border-gray-700 data-[placeholder]:text-gray-500 [&_svg:not([class*='text-'])]:text-gray-400 focus-visible:border-blue-500 focus-visible:ring-blue-500/35 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive flex w-full items-center justify-between gap-2 rounded-xl border bg-[#1f1f1f] px-4 py-2 text-sm text-white whitespace-nowrap transition-[color,box-shadow,border-color,border-radius] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-11 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        sideContext?.side === "bottom"
+          ? "data-[state=open]:rounded-b-none data-[state=open]:border-b-0"
+          : "data-[state=open]:rounded-t-none data-[state=open]:border-t-0",
         className,
       )}
       {...props}
@@ -98,22 +100,26 @@ function SelectContent({
   position = "popper",
   sideOffset = 0,
   side = "bottom",
-  avoidCollisions = true,
+  avoidCollisions = false,
   collisionPadding = 8,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
+  const sideContext = React.useContext(SelectSideContext);
+  const resolvedSide = sideContext?.side ?? side;
+
   return (
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         data-slot="select-content"
+        data-dropdown-side={resolvedSide}
         className={cn(
-          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative z-50 max-h-[min(20rem,var(--radix-select-content-available-height))] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 shadow-md",
+          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative z-50 max-h-[min(20rem,var(--radix-select-content-available-height))] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto box-border border border-gray-700 shadow-md data-[side=bottom]:rounded-b-xl data-[side=bottom]:rounded-t-none data-[side=bottom]:border-t-0 data-[side=top]:rounded-t-xl data-[side=top]:rounded-b-none data-[side=top]:border-b-0",
           position === "popper" && "w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)]",
           className
         )}
         position={position}
         sideOffset={sideOffset}
-        side={side}
+        side={resolvedSide}
         avoidCollisions={avoidCollisions}
         collisionPadding={collisionPadding}
         {...props}

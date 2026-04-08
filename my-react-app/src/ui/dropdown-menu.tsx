@@ -6,49 +6,35 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 
 import { cn } from "./utils";
 
-const MIN_DROPDOWN_OPEN_SPACE = 220;
+type DropdownSide = "top" | "bottom";
+const MIN_CONTENT_SPACE = 220;
 
-function hasEnoughSpaceBelow(element: HTMLElement | null, minHeight = MIN_DROPDOWN_OPEN_SPACE) {
-  if (!element || typeof window === "undefined") return true;
-  const rect = element.getBoundingClientRect();
-  return window.innerHeight - rect.bottom >= minHeight;
+const DropdownSideContext = React.createContext<{
+  side: DropdownSide;
+  setSide: (side: DropdownSide) => void;
+} | null>(null);
+
+function getPreferredSide(trigger: HTMLElement | null): DropdownSide {
+  if (!trigger || typeof window === "undefined") return "bottom";
+  const rect = trigger.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+  return spaceBelow >= MIN_CONTENT_SPACE ? "bottom" : "top";
 }
 
 function DropdownMenu({
-  open: controlledOpen,
-  defaultOpen,
-  onOpenChange,
   modal = false,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
-  const isControlled = controlledOpen !== undefined;
-
-  const handleOpenChange = (nextOpen: boolean) => {
-    if (nextOpen) {
-      const trigger = (document.activeElement as HTMLElement | null)?.closest(
-        '[data-slot="dropdown-menu-trigger"]',
-      ) as HTMLElement | null;
-
-      if (!hasEnoughSpaceBelow(trigger)) {
-        onOpenChange?.(false);
-        if (!isControlled) setInternalOpen(false);
-        return;
-      }
-    }
-
-    onOpenChange?.(nextOpen);
-    if (!isControlled) setInternalOpen(nextOpen);
-  };
+  const [side, setSide] = React.useState<DropdownSide>("bottom");
 
   return (
-    <DropdownMenuPrimitive.Root
-      data-slot="dropdown-menu"
-      modal={modal}
-      open={isControlled ? controlledOpen : internalOpen}
-      onOpenChange={handleOpenChange}
-      {...props}
-    />
+    <DropdownSideContext.Provider value={{ side, setSide }}>
+      <DropdownMenuPrimitive.Root
+        data-slot="dropdown-menu"
+        modal={modal}
+        {...props}
+      />
+    </DropdownSideContext.Provider>
   );
 }
 
@@ -61,11 +47,27 @@ function DropdownMenuPortal({
 }
 
 function DropdownMenuTrigger({
+  onPointerDown,
+  onKeyDown,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+  const sideContext = React.useContext(DropdownSideContext);
+
   return (
     <DropdownMenuPrimitive.Trigger
       data-slot="dropdown-menu-trigger"
+      data-dropdown-side={sideContext?.side ?? "bottom"}
+      onPointerDown={(event) => {
+        sideContext?.setSide(getPreferredSide(event.currentTarget));
+        onPointerDown?.(event);
+      }}
+      onKeyDown={(event) => {
+        const opensMenu = event.key === "Enter" || event.key === " " || event.key === "ArrowDown";
+        if (opensMenu) {
+          sideContext?.setSide(getPreferredSide(event.currentTarget));
+        }
+        onKeyDown?.(event);
+      }}
       {...props}
     />
   );
@@ -76,21 +78,25 @@ function DropdownMenuContent({
   sideOffset = 0,
   align = "start",
   side = "bottom",
-  avoidCollisions = true,
+  avoidCollisions = false,
   collisionPadding = 8,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  const sideContext = React.useContext(DropdownSideContext);
+  const resolvedSide = sideContext?.side ?? side;
+
   return (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         data-slot="dropdown-menu-content"
+        data-dropdown-side={resolvedSide}
         sideOffset={sideOffset}
         align={align}
-        side={side}
+        side={resolvedSide}
         avoidCollisions={avoidCollisions}
         collisionPadding={collisionPadding}
         className={cn(
-          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 p-1.5 shadow-md w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]",
+          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto box-border border border-gray-700 p-1.5 shadow-md w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)] data-[side=bottom]:rounded-b-xl data-[side=bottom]:rounded-t-none data-[side=bottom]:border-t-0 data-[side=top]:rounded-t-xl data-[side=top]:rounded-b-none data-[side=top]:border-b-0",
           className,
         )}
         {...props}
