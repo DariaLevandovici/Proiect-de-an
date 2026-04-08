@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { LogOut, ChefHat, Eye, AlertTriangle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { menuItems } from '../data/menuData';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export function CookDashboard() {
   const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
@@ -197,15 +198,16 @@ export function CookDashboard() {
               onChange={(e) => setMenuSearchTerm(e.target.value)}
               className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
             />
-            <select
-              value={menuFilter}
-              onChange={(e) => setMenuFilter(e.target.value)}
-              className="bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
-            >
-              <option value="All">All Items</option>
-              <option value="Available">Available Only</option>
-              <option value="Unavailable">Unavailable Only</option>
-            </select>
+            <Select value={menuFilter} onValueChange={setMenuFilter}>
+              <SelectTrigger className="w-52">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Items</SelectItem>
+                <SelectItem value="Available">Available Only</SelectItem>
+                <SelectItem value="Unavailable">Unavailable Only</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
