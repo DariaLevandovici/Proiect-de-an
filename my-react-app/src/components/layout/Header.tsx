@@ -1,12 +1,18 @@
 import { Search, ShoppingCart, User, LogOut } from 'lucide-react';
-import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '../../ui/dropdown-menu';
 
 export function Header() {
   const navigate = useNavigate();
   const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
-  const [cartCount] = useState(3);
 
   const handleLogout = () => {
     logout();
@@ -19,17 +25,19 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-8">
-            <button onClick={() => navigate('/')} className="flex items-center gap-2">
+            <Button onClick={() => navigate('/')} variant="ghost" className="h-auto px-0 py-0 hover:bg-transparent">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">G</span>
               </div>
               <h1 className="text-2xl font-bold text-white">GastroFlow</h1>
-            </button>
+            </Button>
             
             {/* Cart */}
-            <button 
+            <Button 
               onClick={() => navigate('/cart')}
-              className="relative p-2 hover:bg-gray-800 rounded-full transition-colors"
+              variant="ghost"
+              size="icon"
+              className="relative rounded-xl"
             >
               <ShoppingCart className="w-6 h-6 text-gray-300" />
               {cart.length > 0 && (
@@ -37,7 +45,7 @@ export function Header() {
                   {cart.length}
                 </span>
               )}
-            </button>
+            </Button>
           </div>
 
           {/* Central Navigation */}
@@ -64,43 +72,55 @@ export function Header() {
           {/* Right Side - Search & Login */}
           <div className="flex items-center gap-4">
             {/* Search Bar */}
-            <div className="hidden md:flex items-center bg-gray-800 rounded-full px-4 py-2 w-64">
+            <div className="hidden md:flex items-center gap-2 w-64">
               <Search className="w-4 h-4 text-gray-400 mr-2" />
-              <input
+              <Input
                 type="text"
                 placeholder="Search dishes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full"
+                className="h-10"
               />
             </div>
 
             {/* User Menu or Login */}
             {user ? (
               <div className="flex items-center gap-2">
-                <button 
+                <Button
                   onClick={() => navigate('/account')}
-                  className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition-colors"
+                  variant="secondary"
+                  className="h-10"
                 >
                   <User className="w-4 h-4" />
                   <span className="text-sm">{user.name}</span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 px-4 py-2 rounded-full transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="text-sm">Logout</span>
-                </button>
+                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="h-10 px-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0"
+                    >
+                      Menu
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => navigate('/account')}>
+                      <User className="mr-2 h-4 w-4" /> Account
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
-              <button 
+              <Button 
                 onClick={() => navigate('/login')}
-                className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition-colors"
+                className="h-10 px-6"
               >
                 <User className="w-4 h-4" />
                 <span>Login</span>
-              </button>
+              </Button>
             )}
           </div>
         </div>

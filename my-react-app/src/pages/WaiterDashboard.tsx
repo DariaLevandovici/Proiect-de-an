@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { LogOut, Plus, MessageSquare, Receipt } from 'lucide-react';
+import { LogOut, Plus, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
 
 export function WaiterDashboard() {
   const { user, logout, tables, updateTableStatus, orders, updateOrderStatus } = useApp();
   const navigate = useNavigate();
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
-  const [orderComment, setOrderComment] = useState('');
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   const handleLogout = () => {
     logout();
@@ -17,11 +15,7 @@ export function WaiterDashboard() {
   };
 
   const handleSendToKitchen = (orderId: string) => {
-    if (orderComment.trim()) {
-      alert(`Order ${orderId} sent to kitchen with comment: ${orderComment}`);
-      setOrderComment('');
-      setShowCommentModal(false);
-    }
+    updateOrderStatus(orderId, 'confirmed');
   };
 
   return (
@@ -34,27 +28,29 @@ export function WaiterDashboard() {
             <p className="text-gray-400">Welcome, {user?.name}</p>
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={() => navigate('/dashboard/waiter/create-order')}
-              className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-full transition-colors"
+              className="px-6"
             >
               <Plus className="w-4 h-4" />
               Create New Order
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => navigate('/dashboard/waiter/bill')}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <Receipt className="w-4 h-4" />
               Generate Bill
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <LogOut className="w-4 h-4" />
               Logout
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -112,28 +108,59 @@ export function WaiterDashboard() {
                     <div>
                       <h3 className="text-xl font-bold text-white mb-1">Order #{order.id}</h3>
                       <p className="text-gray-400 text-sm capitalize">{order.type}</p>
+                      {order.tableNumber && (
+                        <p className="text-gray-400 text-sm">Table #{order.tableNumber}</p>
+                      )}
                     </div>
                     <span className="text-blue-400 font-bold text-lg">{order.total} MDL</span>
                   </div>
 
                   {/* Order Status */}
                   <div className="mb-4">
-                    <select
-                      value={order.status}
-                      onChange={(e) => updateOrderStatus(order.id, e.target.value as any)}
-                      className="w-full bg-gray-800 text-white px-4 py-2 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
-                    >
-                      <option value="confirmed">Confirmed</option>
-                      <option value="in-preparation">In Preparation</option>
-                      <option value="ready">Ready</option>
-                      <option value="delivered">Delivered</option>
-                    </select>
+                    <div className={`w-full px-4 py-2 rounded-full border text-sm font-semibold ${
+                      order.status === 'draft'
+                        ? 'bg-gray-800 border-gray-700 text-gray-300'
+                        : order.status === 'confirmed'
+                          ? 'bg-blue-900/30 border-blue-700 text-blue-300'
+                          : order.status === 'in-preparation'
+                            ? 'bg-yellow-900/30 border-yellow-700 text-yellow-300'
+                            : order.status === 'ready'
+                              ? 'bg-green-900/30 border-green-700 text-green-300'
+                              : 'bg-emerald-900/30 border-emerald-700 text-emerald-300'
+                    }`}>
+                      {order.status === 'draft' && 'Created (Not Sent)'}
+                      {order.status === 'confirmed' && 'Sent to Kitchen'}
+                      {order.status === 'in-preparation' && 'In Preparation'}
+                      {order.status === 'ready' && 'Ready'}
+                      {order.status === 'delivered' && 'Delivered'}
+                    </div>
                   </div>
 
                   {/* Actions */}
-                  <button className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors">
-                    Send to Kitchen
-                  </button>
+                  <div className="space-y-3">
+                    <Button
+                      onClick={() => handleSendToKitchen(order.id)}
+                      disabled={order.status !== 'draft'}
+                      className={`w-full ${
+                        order.status === 'draft'
+                          ? 'bg-blue-700 hover:bg-blue-600 text-white'
+                          : 'bg-green-800 text-green-200 cursor-not-allowed'
+                      }`}
+                    >
+                      {order.status === 'draft' ? 'Send to Kitchen' : 'Order Sent'}
+                    </Button>
+                    <Button
+                      onClick={() => updateOrderStatus(order.id, 'delivered')}
+                      disabled={order.status !== 'ready'}
+                      className={`w-full ${
+                        order.status === 'ready'
+                          ? 'bg-emerald-700 hover:bg-emerald-600 text-white'
+                          : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {order.status === 'delivered' ? 'Delivered' : 'Mark as Delivered'}
+                    </Button>
+                  </div>
                 </div>
               ))}
 
@@ -161,38 +188,6 @@ export function WaiterDashboard() {
           </div>
         </div>
 
-        {/* Comment Modal */}
-        {showCommentModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-            <div className="bg-[#242424] rounded-2xl p-8 border border-gray-800 max-w-md w-full mx-4">
-              <h3 className="text-2xl font-bold text-white mb-6">Add Order Comment</h3>
-              <textarea
-                value={orderComment}
-                onChange={(e) => setOrderComment(e.target.value)}
-                placeholder="Special instructions for the kitchen..."
-                rows={4}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500 resize-none mb-6"
-              />
-              <div className="flex gap-3">
-                <button
-                  onClick={() => selectedOrder && handleSendToKitchen(selectedOrder)}
-                  className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors"
-                >
-                  Send
-                </button>
-                <button
-                  onClick={() => {
-                    setShowCommentModal(false);
-                    setOrderComment('');
-                  }}
-                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-full transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

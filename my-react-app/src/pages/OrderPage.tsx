@@ -4,11 +4,12 @@ import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
 
 type OrderType = 'delivery' | 'takeaway' | 'dine-in';
-type OrderStatus = 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
+type OrderStatus = 'draft' | 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
 
-const statusSteps: OrderStatus[] = ['confirmed', 'in-preparation', 'ready', 'delivered'];
+const statusSteps: OrderStatus[] = ['draft', 'confirmed', 'in-preparation', 'ready', 'delivered'];
 
 const statusLabels: Record<OrderStatus, string> = {
+  draft: 'Created',
   confirmed: 'Order Confirmed',
   'in-preparation': 'In Preparation',
   ready: 'Ready',
@@ -16,7 +17,7 @@ const statusLabels: Record<OrderStatus, string> = {
 };
 
 export function OrderPage() {
-  const { orders, cancelOrder, cart, addOrder, clearCart } = useApp();
+  const { user, orders, cancelOrder, cart, addOrder, clearCart } = useApp();
   const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<OrderType>('delivery');
   const [address, setAddress] = useState('');
@@ -30,6 +31,11 @@ export function OrderPage() {
   ];
 
   const getStatusIndex = (status: OrderStatus) => statusSteps.indexOf(status);
+  const clientOrders = orders.filter(order => {
+    if (order.origin !== 'client') return false;
+    if (!user) return true;
+    return !order.createdByUserId || order.createdByUserId === user.id;
+  });
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -55,6 +61,8 @@ export function OrderPage() {
       items: cart,
       total: cartTotal,
       status: 'confirmed',
+      origin: 'client',
+      createdByUserId: user?.id,
       ...(selectedType === 'delivery' && { address: address.trim() })
     });
     clearCart();
@@ -168,16 +176,16 @@ export function OrderPage() {
         <div>
           <h2 className="text-2xl font-bold text-white mb-6">Your Orders</h2>
 
-          {orders.length === 0 ? (
+          {clientOrders.length === 0 ? (
             <div className="bg-[#242424] rounded-2xl p-12 border border-gray-800 text-center">
               <ShoppingBag className="w-16 h-16 text-gray-700 mx-auto mb-4" />
-              <p className="text-gray-400">No active orders</p>
+              <p className="text-gray-400">No orders found</p>
             </div>
           ) : (
             <div className="space-y-6">
-              {orders.map(order => {
+              {clientOrders.map(order => {
                 const currentStatusIndex = getStatusIndex(order.status);
-                const canCancel = order.status === 'confirmed';
+                const canCancel = order.status === 'draft' || order.status === 'confirmed';
 
                 return (
                   <div key={order.id} className="bg-[#242424] rounded-2xl p-6 border border-gray-800">
@@ -257,6 +265,7 @@ export function OrderPage() {
                         <p className="text-blue-400 text-sm">
                           Estimated time: {
                             order.status === 'confirmed' ? '30-40 minutes' :
+                              order.status === 'draft' ? 'Waiting to be sent to kitchen' :
                               order.status === 'in-preparation' ? '15-20 minutes' :
                                 '5 minutes'
                           }

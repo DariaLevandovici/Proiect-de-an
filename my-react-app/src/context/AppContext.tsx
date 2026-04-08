@@ -14,9 +14,14 @@ interface Order {
   type: 'delivery' | 'takeaway' | 'dine-in';
   items: CartItem[];
   total: number;
-  status: 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
+  status: 'draft' | 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
   createdAt: string;
   address?: string;
+  tableNumber?: number;
+  clientName?: string;
+  comment?: string;
+  origin?: 'client' | 'waiter';
+  createdByUserId?: string;
 }
 
 interface Reservation {
@@ -91,7 +96,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       total: 450,
       status: 'confirmed',
       createdAt: new Date().toISOString(),
-      address: 'Str. Stefan cel Mare 123'
+      address: 'Str. Stefan cel Mare 123',
+      origin: 'waiter'
     }
   ]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -159,7 +165,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const newOrder: Order = {
       ...order,
       id: `ORD${String(orders.length + 1).padStart(3, '0')}`,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      origin: order.origin ?? (user?.role === 'waiter' ? 'waiter' : 'client'),
+      createdByUserId: order.createdByUserId ?? user?.id
     };
     setOrders(prev => [newOrder, ...prev]);
   };
@@ -170,7 +178,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const cancelOrder = (id: string) => {
     const order = orders.find(o => o.id === id);
-    if (order && order.status === 'confirmed') {
+    if (order && (order.status === 'draft' || order.status === 'confirmed')) {
       setOrders(prev => prev.filter(o => o.id !== id));
     }
   };
