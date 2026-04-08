@@ -50,22 +50,22 @@ export function Header() {
 
           {/* Central Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <button onClick={() => navigate('/reservation')} className="text-gray-300 hover:text-white transition-colors">
+            <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/reservation')}>
               Reservation
-            </button>
-            <button onClick={() => navigate('/order')} className="text-gray-300 hover:text-white transition-colors">
+            </Button>
+            <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/order')}>
               Order
-            </button>
-            <button onClick={() => navigate('/menu')} className="text-gray-300 hover:text-white transition-colors">
+            </Button>
+            <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/menu')}>
               Meniu
-            </button>
-            <button onClick={() => navigate('/career')} className="text-gray-300 hover:text-white transition-colors">
+            </Button>
+            <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/career')}>
               Career
-            </button>
+            </Button>
             {user && user.role === 'client' && (
-              <button onClick={() => navigate('/dashboard/client')} className="text-blue-400 hover:text-blue-300 transition-colors">
+              <Button variant="ghost" className="text-blue-400 hover:text-blue-300 px-2" onClick={() => navigate('/dashboard/client')}>
                 Dashboard
-              </button>
+              </Button>
             )}
           </nav>
 

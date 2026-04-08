@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { MenuItem } from '../../../data/menuData';
 import { ProductCard } from './ProductCard';
+import { Button } from '../../../ui/button';
 
 interface MenuCarouselProps {
   items: MenuItem[];
@@ -95,24 +96,26 @@ export function MenuCarousel({ items }: MenuCarouselProps) {
       </div>
 
       {/* Left Arrow */}
-      <button
+      <Button
         onClick={scrollLeft}
-        className={`absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 p-3 rounded-full bg-blue-700/80 hover:bg-blue-600 border border-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-300 ${isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
+        size="icon"
+        className={`absolute left-0 top-1/2 -translate-y-1/2 -ml-4 z-10 size-12 rounded-full bg-blue-700/80 hover:bg-blue-600 border border-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-300 ${isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 pointer-events-none'
           }`}
         aria-label="Scroll left"
       >
         <ChevronLeft className="w-6 h-6" />
-      </button>
+      </Button>
 
       {/* Right Arrow */}
-      <button
+      <Button
         onClick={scrollRight}
-        className={`absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 p-3 rounded-full bg-blue-700/80 hover:bg-blue-600 border border-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-300 ${isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
+        size="icon"
+        className={`absolute right-0 top-1/2 -translate-y-1/2 -mr-4 z-10 size-12 rounded-full bg-blue-700/80 hover:bg-blue-600 border border-white/20 text-white backdrop-blur-md shadow-lg transition-all duration-300 ${isHovering ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4 pointer-events-none'
           }`}
         aria-label="Scroll right"
       >
         <ChevronRight className="w-6 h-6" />
-      </button>
+      </Button>
     </div>
   );
 }

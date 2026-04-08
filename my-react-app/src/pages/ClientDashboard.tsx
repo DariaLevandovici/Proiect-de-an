@@ -1,6 +1,7 @@
 import { useApp } from '../context/AppContext';
 import { Clock, Calendar, ShoppingBag, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
 
 export function ClientDashboard() {
   const { user, orders, reservations, logout } = useApp();
@@ -28,43 +29,47 @@ export function ClientDashboard() {
             <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.name}</h1>
             <p className="text-gray-400">Manage your orders and reservations</p>
           </div>
-          <button
+          <Button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+            variant="secondary"
+            className="px-6"
           >
             <LogOut className="w-4 h-4" />
             Logout
-          </button>
+          </Button>
         </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <button
+          <Button
             onClick={() => navigate('/menu')}
-            className="bg-[#242424] hover:bg-[#2a2a2a] rounded-2xl p-6 border border-gray-800 transition-all text-left"
+            variant="outline"
+            className="h-auto bg-[#242424] hover:bg-[#2a2a2a] p-6 border-gray-800 transition-all text-left flex-col items-start"
           >
             <ShoppingBag className="w-10 h-10 text-blue-400 mb-3" />
             <h3 className="text-xl font-bold text-white mb-2">Order Food</h3>
             <p className="text-gray-400 text-sm">Browse menu and place an order</p>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => navigate('/reservation')}
-            className="bg-[#242424] hover:bg-[#2a2a2a] rounded-2xl p-6 border border-gray-800 transition-all text-left"
+            variant="outline"
+            className="h-auto bg-[#242424] hover:bg-[#2a2a2a] p-6 border-gray-800 transition-all text-left flex-col items-start"
           >
             <Calendar className="w-10 h-10 text-blue-400 mb-3" />
             <h3 className="text-xl font-bold text-white mb-2">Reserve Table</h3>
             <p className="text-gray-400 text-sm">Book a table for dining</p>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => navigate('/order')}
-            className="bg-[#242424] hover:bg-[#2a2a2a] rounded-2xl p-6 border border-gray-800 transition-all text-left"
+            variant="outline"
+            className="h-auto bg-[#242424] hover:bg-[#2a2a2a] p-6 border-gray-800 transition-all text-left flex-col items-start"
           >
             <Clock className="w-10 h-10 text-blue-400 mb-3" />
             <h3 className="text-xl font-bold text-white mb-2">Track Orders</h3>
             <p className="text-gray-400 text-sm">View order status</p>
-          </button>
+          </Button>
         </div>
 
         {/* Active Orders */}

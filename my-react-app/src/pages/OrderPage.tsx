@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Truck, ShoppingBag, UtensilsCrossed, MapPin, Clock, X, CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 type OrderType = 'delivery' | 'takeaway' | 'dine-in';
 type OrderStatus = 'draft' | 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
@@ -103,10 +105,11 @@ export function OrderPage() {
           <h2 className="text-2xl font-bold text-white mb-6">Select Order Type</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {orderTypes.map(({ type, icon: Icon, label, description }) => (
-              <button
+              <Button
                 key={type}
                 onClick={() => setSelectedType(type)}
-                className={`p-6 rounded-2xl border-2 transition-all text-left ${selectedType === type
+                variant="outline"
+                className={`h-auto p-6 border-2 transition-all text-left ${selectedType === type
                     ? 'bg-blue-900/30 border-blue-600'
                     : 'bg-[#242424] border-gray-800 hover:border-gray-700'
                   }`}
@@ -114,7 +117,7 @@ export function OrderPage() {
                 <Icon className={`w-12 h-12 mb-4 ${selectedType === type ? 'text-blue-400' : 'text-gray-400'}`} />
                 <h3 className="text-xl font-bold text-white mb-2">{label}</h3>
                 <p className="text-gray-400 text-sm">{description}</p>
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -125,12 +128,11 @@ export function OrderPage() {
                 <MapPin className="w-5 h-5 text-blue-400" />
                 <span>Delivery Address</span>
               </label>
-              <input
+              <Input
                 type="text"
                 placeholder="Enter your full delivery address..."
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
               />
             </div>
           )}
@@ -152,22 +154,23 @@ export function OrderPage() {
                   </li>
                 ))}
               </ul>
-              <button
+              <Button
                 onClick={handlePlaceOrder}
-                className="w-full bg-blue-700 hover:bg-blue-600 active:scale-95 text-white py-4 rounded-full font-bold text-lg transition-all"
+                className="w-full h-12"
               >
                 Place Order
-              </button>
+              </Button>
             </>
           ) : (
             <>
               <p className="text-gray-500 text-sm mb-6">No items in cart yet. Visit the Menu to add items.</p>
-              <button
+              <Button
                 onClick={() => navigate('/menu')}
-                className="w-full bg-gray-800 hover:bg-gray-700 active:scale-95 text-white py-4 rounded-full font-bold text-lg transition-all"
+                variant="secondary"
+                className="w-full h-12"
               >
                 Browse Menu
-              </button>
+              </Button>
             </>
           )}
         </div>
@@ -203,17 +206,18 @@ export function OrderPage() {
                         </div>
                       </div>
                       {canCancel && (
-                        <button
+                        <Button
                           onClick={() => {
                             if (confirm('Are you sure you want to cancel this order?')) {
                               cancelOrder(order.id);
                             }
                           }}
-                          className="flex items-center gap-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 px-4 py-2 rounded-full transition-colors"
+                          variant="destructive"
+                          className="bg-red-900/30 hover:bg-red-900/50 text-red-400"
                         >
                           <X className="w-4 h-4" />
                           Cancel
-                        </button>
+                        </Button>
                       )}
                     </div>
 

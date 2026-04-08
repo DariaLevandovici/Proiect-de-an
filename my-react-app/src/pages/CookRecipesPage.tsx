@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { ArrowLeft, Clock, Users, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { menuItems } from '../data/menuData';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 type MenuItem = typeof menuItems[0];
 
@@ -205,12 +207,13 @@ export function CookRecipesPage() {
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button
+          <Button
             onClick={() => navigate('/dashboard/cook')}
-            className="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
           >
             <ArrowLeft className="w-6 h-6 text-white" />
-          </button>
+          </Button>
           <div className="flex-1">
             <h1 className="text-4xl font-bold text-white mb-2">Recipe Book</h1>
             <p className="text-gray-400">Complete preparation instructions for all dishes</p>
@@ -220,13 +223,14 @@ export function CookRecipesPage() {
         {selectedRecipe ? (
           /* Recipe Detail View */
           <div className="max-w-5xl mx-auto">
-            <button
+            <Button
               onClick={() => setSelectedRecipe(null)}
-              className="mb-6 text-blue-400 hover:text-blue-300 flex items-center gap-2"
+              variant="ghost"
+              className="mb-6 text-blue-400 hover:text-blue-300 flex items-center gap-2 px-0"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to recipes
-            </button>
+            </Button>
 
             <div className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800">
               {/* Recipe Header */}
@@ -301,25 +305,26 @@ export function CookRecipesPage() {
           <>
             {/* Search and Filter */}
             <div className="mb-6 space-y-4">
-              <input
+              <Input
                 type="text"
                 placeholder="Search recipes or ingredients..."
                 value={recipeSearchTerm}
                 onChange={(e) => setRecipeSearchTerm(e.target.value)}
-                className="w-full bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
+                className="h-12 px-6"
               />
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {categories.map(cat => (
-                  <button
+                  <Button
                     key={cat}
                     onClick={() => setRecipeCategory(cat)}
-                    className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${recipeCategory === cat
+                    variant={recipeCategory === cat ? 'default' : 'secondary'}
+                    className={`h-10 px-6 whitespace-nowrap ${recipeCategory === cat
                       ? 'bg-blue-700 text-white'
                       : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                       }`}
                   >
                     {cat}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -332,10 +337,11 @@ export function CookRecipesPage() {
                 </div>
               ) : (
                 filteredRecipes.map(recipe => (
-                  <button
+                  <Button
                     key={recipe.id}
                     onClick={() => setSelectedRecipe(recipe)}
-                    className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800 hover:border-blue-700 transition-all text-left group"
+                    variant="outline"
+                    className="h-auto bg-[#242424] rounded-2xl overflow-hidden border-gray-800 hover:border-blue-700 transition-all text-left group flex-col items-start p-0"
                   >
                     <div className="aspect-video overflow-hidden">
                       <img
@@ -358,7 +364,7 @@ export function CookRecipesPage() {
                         </span>
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 ))
               )}
             </div>

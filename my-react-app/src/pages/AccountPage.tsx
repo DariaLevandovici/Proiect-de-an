@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { User, Mail, Phone, MapPin, Lock, Save } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export function AccountPage() {
   const { user, logout } = useApp();
@@ -52,41 +54,46 @@ export function AccountPage() {
               </div>
 
               <div className="space-y-2">
-                <button
-                  className="w-full text-left px-4 py-3 bg-blue-900/30 text-white rounded-full transition-colors"
+                <Button
+                  variant="default"
+                  className="w-full justify-start px-4 bg-blue-900/30 text-white"
                 >
                   Personal Info
-                </button>
+                </Button>
                 {user.role === 'client' && (
                   <>
-                    <button
+                    <Button
                       onClick={() => navigate('/dashboard/client')}
-                      className="w-full text-left px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-full transition-colors"
+                      variant="ghost"
+                      className="w-full justify-start px-4 text-gray-400 hover:bg-gray-800 hover:text-white"
                     >
                       Dashboard
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => navigate('/order')}
-                      className="w-full text-left px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-full transition-colors"
+                      variant="ghost"
+                      className="w-full justify-start px-4 text-gray-400 hover:bg-gray-800 hover:text-white"
                     >
                       My Orders
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => navigate('/reservation')}
-                      className="w-full text-left px-4 py-3 text-gray-400 hover:bg-gray-800 hover:text-white rounded-full transition-colors"
+                      variant="ghost"
+                      className="w-full justify-start px-4 text-gray-400 hover:bg-gray-800 hover:text-white"
                     >
                       Reservations
-                    </button>
+                    </Button>
                   </>
                 )}
               </div>
 
-              <button
+              <Button
                 onClick={handleLogout}
-                className="w-full mt-6 bg-red-900/30 hover:bg-red-900/50 text-red-400 py-3 rounded-full transition-colors"
+                variant="destructive"
+                className="w-full mt-6 bg-red-900/30 hover:bg-red-900/50 text-red-400"
               >
                 Logout
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -102,11 +109,10 @@ export function AccountPage() {
                     <User className="w-5 h-5 text-blue-400" />
                     <span>Full Name</span>
                   </label>
-                  <input
+                  <Input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
                   />
                 </div>
 
@@ -116,11 +122,10 @@ export function AccountPage() {
                     <Mail className="w-5 h-5 text-blue-400" />
                     <span>Email</span>
                   </label>
-                  <input
+                  <Input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
                   />
                 </div>
 
@@ -130,11 +135,10 @@ export function AccountPage() {
                     <Phone className="w-5 h-5 text-blue-400" />
                     <span>Phone Number</span>
                   </label>
-                  <input
+                  <Input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
                   />
                 </div>
 
@@ -145,11 +149,10 @@ export function AccountPage() {
                       <MapPin className="w-5 h-5 text-blue-400" />
                       <span>Address</span>
                     </label>
-                    <input
+                    <Input
                       type="text"
                       value={formData.address}
                       onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                      className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
                     />
                   </div>
                 )}
@@ -164,12 +167,11 @@ export function AccountPage() {
                     <Lock className="w-5 h-5 text-blue-400" />
                     <span>Current Password</span>
                   </label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="••••••••"
                     value={formData.currentPassword}
                     onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                   />
                 </div>
 
@@ -178,12 +180,11 @@ export function AccountPage() {
                     <Lock className="w-5 h-5 text-blue-400" />
                     <span>New Password</span>
                   </label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="••••••••"
                     value={formData.newPassword}
                     onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                   />
                 </div>
 
@@ -192,22 +193,21 @@ export function AccountPage() {
                     <Lock className="w-5 h-5 text-blue-400" />
                     <span>Confirm New Password</span>
                   </label>
-                  <input
+                  <Input
                     type="password"
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  className="w-full bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full font-bold transition-colors flex items-center justify-center gap-2"
+                  className="w-full h-12 flex items-center justify-center gap-2"
                 >
                   <Save className="w-5 h-5" />
                   Save Changes
-                </button>
+                </Button>
               </form>
             </div>
           </div>

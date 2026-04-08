@@ -4,6 +4,8 @@ import { LogOut, ChefHat, Eye, AlertTriangle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { menuItems } from '../data/menuData';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export function CookDashboard() {
   const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
@@ -58,20 +60,22 @@ export function CookDashboard() {
             <p className="text-gray-400">Welcome, {user?.name}</p>
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={() => navigate('/dashboard/cook/recipes')}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <BookOpen className="w-4 h-4" />
               Recipes
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <LogOut className="w-4 h-4" />
               Logout
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -130,13 +134,13 @@ export function CookDashboard() {
                       )}
                     </div>
 
-                    <button
+                    <Button
                       onClick={() => handlePickOrder(order.id)}
-                      className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                      className="w-full"
                     >
                       <ChefHat className="w-4 h-4" />
                       Start Preparing
-                    </button>
+                    </Button>
                   </div>
                 ))
               )}
@@ -172,12 +176,13 @@ export function CookDashboard() {
                       <p className="text-white text-sm">{order.comment || 'No special instructions'}</p>
                     </div>
 
-                    <button
+                    <Button
                       onClick={() => handleCompleteOrder(order.id)}
-                      className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full transition-colors"
+                      variant="success"
+                      className="w-full"
                     >
                       Mark as Ready
-                    </button>
+                    </Button>
                   </div>
                 ))
               )}
@@ -191,12 +196,12 @@ export function CookDashboard() {
           
           {/* Search and Filter */}
           <div className="mb-6 flex gap-4">
-            <input
+            <Input
               type="text"
               placeholder="Search menu items..."
               value={menuSearchTerm}
               onChange={(e) => setMenuSearchTerm(e.target.value)}
-              className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
+              className="flex-1 h-12 px-6"
             />
             <Select value={menuFilter} onValueChange={setMenuFilter}>
               <SelectTrigger className="w-52">
@@ -214,10 +219,11 @@ export function CookDashboard() {
             {filteredMenuItems.map(item => {
               const isUnavailable = unavailableItems.includes(item.name);
               return (
-                <button
+                <Button
                   key={item.id}
                   onClick={() => setItemAvailability(item.name, isUnavailable)}
-                  className={`p-4 rounded-lg border-2 transition-all text-left ${
+                  variant="outline"
+                  className={`h-auto p-4 border-2 transition-all text-left ${
                     isUnavailable
                       ? 'bg-red-900/30 border-red-600'
                       : 'bg-green-900/30 border-green-600'
@@ -227,7 +233,7 @@ export function CookDashboard() {
                   <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
                     {isUnavailable ? 'Unavailable' : 'Available'}
                   </p>
-                </button>
+                </Button>
               );
             })}
           </div>
