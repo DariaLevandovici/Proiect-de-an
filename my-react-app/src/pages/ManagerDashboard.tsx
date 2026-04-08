@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
 
 export function ManagerDashboard() {
   const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
@@ -32,13 +33,14 @@ export function ManagerDashboard() {
             <h1 className="text-4xl font-bold text-white mb-2">Manager Dashboard</h1>
             <p className="text-gray-400">Welcome, {user?.name}</p>
           </div>
-          <button
+          <Button
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+            variant="secondary"
+            className="px-6"
           >
             <LogOut className="w-4 h-4" />
             Logout
-          </button>
+          </Button>
         </div>
 
         {/* Stats Overview */}
@@ -88,10 +90,11 @@ export function ManagerDashboard() {
             { id: 'reservations', label: 'Reservations', icon: Calendar },
             { id: 'reports', label: 'Reports', icon: Users }
           ].map(tab => (
-            <button
+            <Button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id as any)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full transition-colors whitespace-nowrap ${
+              variant={selectedTab === tab.id ? 'default' : 'secondary'}
+              className={`flex items-center gap-2 px-6 whitespace-nowrap ${
                 selectedTab === tab.id
                   ? 'bg-blue-700 text-white'
                   : 'bg-[#242424] text-gray-400 hover:bg-gray-800'
@@ -99,7 +102,7 @@ export function ManagerDashboard() {
             >
               <tab.icon className="w-4 h-4" />
               {tab.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -150,9 +153,9 @@ export function ManagerDashboard() {
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-white">Inventory Management</h2>
-              <button className="bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-full transition-colors">
+              <Button className="px-6">
                 Add Item
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -185,18 +188,20 @@ export function ManagerDashboard() {
                       </div>
 
                       <div className="flex gap-2 mt-4">
-                        <button
+                        <Button
                           onClick={() => updateInventory(item.id, item.quantity - 5)}
-                          className="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 py-2 rounded-lg transition-colors"
+                          variant="destructive"
+                          className="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 h-9"
                         >
                           -5
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={() => updateInventory(item.id, item.quantity + 10)}
-                          className="flex-1 bg-green-900/30 hover:bg-green-900/50 text-green-400 py-2 rounded-lg transition-colors"
+                          variant="success"
+                          className="flex-1 h-9"
                         >
                           +10
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -232,18 +237,20 @@ export function ManagerDashboard() {
                       <div className="flex gap-2">
                         {reservation.status === 'pending' && (
                           <>
-                            <button
+                            <Button
                               onClick={() => updateReservationStatus(reservation.id, 'confirmed')}
-                              className="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded-full transition-colors text-sm"
+                              variant="success"
+                              className="h-9 px-4 text-sm"
                             >
                               Confirm
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                               onClick={() => updateReservationStatus(reservation.id, 'cancelled')}
-                              className="bg-red-900/30 hover:bg-red-900/50 text-red-400 px-4 py-2 rounded-full transition-colors text-sm"
+                              variant="destructive"
+                              className="h-9 px-4 text-sm bg-red-900/30 hover:bg-red-900/50 text-red-400"
                             >
                               Cancel
-                            </button>
+                            </Button>
                           </>
                         )}
                         {reservation.status !== 'pending' && (
@@ -313,9 +320,9 @@ export function ManagerDashboard() {
               </div>
             </div>
 
-            <button className="mt-6 w-full bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full transition-colors">
+            <Button className="mt-6 w-full h-12">
               Generate Full Report
-            </button>
+            </Button>
           </div>
         )}
       </div>
