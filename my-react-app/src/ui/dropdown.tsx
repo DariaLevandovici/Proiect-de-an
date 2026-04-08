@@ -23,7 +23,10 @@ export function Dropdown({ label, options, onSelect }: DropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="min-w-36 justify-between">
+        <Button
+          variant="outline"
+          className="min-w-36 justify-between data-[state=open]:rounded-b-none data-[state=open]:border-b-0"
+        >
           {label}
           <ChevronDown className="size-4" />
         </Button>
