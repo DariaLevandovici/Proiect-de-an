@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Printer, Download } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../context/AppContext';
+import { Button } from '../ui/button';
 
 export function WaiterBillPage() {
   const navigate = useNavigate();
@@ -36,12 +37,13 @@ export function WaiterBillPage() {
       <div className="container mx-auto px-6 max-w-5xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button
+          <Button
             onClick={() => navigate('/dashboard/waiter')}
-            className="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
           >
             <ArrowLeft className="w-6 h-6 text-white" />
-          </button>
+          </Button>
           <h1 className="text-4xl font-bold text-white">Generate Bill</h1>
         </div>
 
@@ -52,10 +54,11 @@ export function WaiterBillPage() {
               <h3 className="text-xl font-bold text-white mb-4">Select Table</h3>
               <div className="grid grid-cols-3 gap-3">
                 {tables.filter(t => t.status === 'occupied').map(table => (
-                  <button
+                  <Button
                     key={table.id}
                     onClick={() => setSelectedTable(table.number)}
-                    className={`p-4 rounded-xl border-2 transition-all ${
+                    variant="outline"
+                    className={`h-auto p-4 border-2 transition-all ${
                       selectedTable === table.number
                         ? 'bg-blue-900/30 border-blue-600'
                         : 'bg-gray-800 border-gray-700 hover:border-gray-600'
@@ -63,7 +66,7 @@ export function WaiterBillPage() {
                   >
                     <p className="text-white font-bold text-center text-lg">{table.number}</p>
                     <p className="text-gray-400 text-xs text-center mt-1">Occupied</p>
-                  </button>
+                  </Button>
                 ))}
               </div>
 
@@ -163,20 +166,21 @@ export function WaiterBillPage() {
 
                   {/* Actions */}
                   <div className="flex gap-4">
-                    <button
+                    <Button
                       onClick={handlePrintBill}
-                      className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                      variant="secondary"
+                      className="flex-1"
                     >
                       <Printer className="w-4 h-4" />
                       Print Bill
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={handleGenerateBill}
-                      className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                      className="flex-1"
                     >
                       <Download className="w-4 h-4" />
                       Finalize & Close
-                    </button>
+                    </Button>
                   </div>
 
                   <p className="text-center text-gray-500 text-xs mt-6">
