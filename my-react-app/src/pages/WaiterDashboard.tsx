@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { LogOut, Plus, Receipt } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
 
 export function WaiterDashboard() {
   const { user, logout, tables, updateTableStatus, orders, updateOrderStatus } = useApp();
@@ -27,27 +28,29 @@ export function WaiterDashboard() {
             <p className="text-gray-400">Welcome, {user?.name}</p>
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={() => navigate('/dashboard/waiter/create-order')}
-              className="flex items-center gap-2 bg-blue-700 hover:bg-blue-600 text-white px-6 py-3 rounded-full transition-colors"
+              className="px-6"
             >
               <Plus className="w-4 h-4" />
               Create New Order
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => navigate('/dashboard/waiter/bill')}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <Receipt className="w-4 h-4" />
               Generate Bill
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <LogOut className="w-4 h-4" />
               Logout
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -135,28 +138,28 @@ export function WaiterDashboard() {
 
                   {/* Actions */}
                   <div className="space-y-3">
-                    <button
+                    <Button
                       onClick={() => handleSendToKitchen(order.id)}
                       disabled={order.status !== 'draft'}
-                      className={`w-full py-3 rounded-full transition-colors ${
+                      className={`w-full ${
                         order.status === 'draft'
                           ? 'bg-blue-700 hover:bg-blue-600 text-white'
                           : 'bg-green-800 text-green-200 cursor-not-allowed'
                       }`}
                     >
                       {order.status === 'draft' ? 'Send to Kitchen' : 'Order Sent'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       onClick={() => updateOrderStatus(order.id, 'delivered')}
                       disabled={order.status !== 'ready'}
-                      className={`w-full py-3 rounded-full transition-colors ${
+                      className={`w-full ${
                         order.status === 'ready'
                           ? 'bg-emerald-700 hover:bg-emerald-600 text-white'
                           : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                       }`}
                     >
                       {order.status === 'delivered' ? 'Delivered' : 'Mark as Delivered'}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}

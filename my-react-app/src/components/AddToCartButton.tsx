@@ -1,5 +1,6 @@
 import { Plus, Minus } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { Button } from '../ui/button';
 
 interface AddToCartButtonProps {
   item: {
@@ -18,33 +19,36 @@ export function AddToCartButton({ item }: AddToCartButtonProps) {
 
   if (quantity === 0) {
     return (
-      <button
+      <Button
         onClick={() => addToCart(item)}
-        className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 h-[48px] rounded-full transition-colors flex items-center justify-center gap-2"
+        className="h-12 w-full"
       >
         <Plus className="w-4 h-4" />
         Add to Cart
-      </button>
+      </Button>
     );
   }
 
   return (
     <div className="w-full bg-[#1e1e1e] border border-blue-700 text-white rounded-full h-[48px] flex items-center justify-between px-1 transition-all overflow-hidden">
-      <button
+      <Button
         onClick={() => updateCartQuantity(item.id, quantity - 1)}
-        className="w-10 h-10 rounded-full hover:bg-gray-800 flex items-center justify-center transition-colors flex-shrink-0"
+        variant="ghost"
+        size="icon"
+        className="h-10 w-10 rounded-xl text-gray-300 hover:bg-gray-800 flex-shrink-0"
       >
         <Minus className="w-4 h-4 text-gray-300" />
-      </button>
+      </Button>
 
       <span className="font-bold flex-1 text-center select-none text-lg text-white">{quantity}</span>
 
-      <button
+      <Button
         onClick={() => updateCartQuantity(item.id, quantity + 1)}
-        className="w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-600 flex items-center justify-center transition-colors flex-shrink-0"
+        size="icon"
+        className="h-10 w-10 rounded-xl flex-shrink-0"
       >
         <Plus className="w-4 h-4 text-white" />
-      </button>
+      </Button>
     </div>
   );
 }

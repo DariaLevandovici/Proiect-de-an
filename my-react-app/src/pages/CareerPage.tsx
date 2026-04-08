@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { Briefcase, User, Mail, Phone, Upload, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { Card } from '../ui/card';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Button } from '../ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../ui/select';
 
 const positions = [
   {
@@ -57,9 +68,9 @@ export function CareerPage() {
         {/* Available Positions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {positions.map(position => (
-            <div
+            <Card
               key={position.id}
-              className="bg-[#242424] rounded-2xl p-6 border border-gray-800 hover:border-blue-700 transition-all"
+              className="p-6 hover:border-blue-700 transition-all"
             >
               <Briefcase className="w-12 h-12 text-blue-400 mb-4" />
               <h3 className="text-xl font-bold text-white mb-3">{position.title}</h3>
@@ -75,7 +86,7 @@ export function CareerPage() {
                   ))}
                 </ul>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
 
@@ -90,17 +101,19 @@ export function CareerPage() {
                 <Briefcase className="w-5 h-5 text-blue-400" />
                 <span>Position Applied For</span>
               </label>
-              <select
-                required
+              <Select
                 value={formData.position}
-                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
+                onValueChange={(value) => setFormData({ ...formData, position: value })}
               >
-                <option value="">Select a position</option>
-                {positions.map(pos => (
-                  <option key={pos.id} value={pos.id}>{pos.title}</option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a position" />
+                </SelectTrigger>
+                <SelectContent>
+                  {positions.map(pos => (
+                    <SelectItem key={pos.id} value={pos.id}>{pos.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Personal Information */}
@@ -110,13 +123,12 @@ export function CareerPage() {
                   <User className="w-5 h-5 text-blue-400" />
                   <span>Full Name</span>
                 </label>
-                <input
+                <Input
                   type="text"
                   required
                   placeholder="John Doe"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                 />
               </div>
 
@@ -125,13 +137,12 @@ export function CareerPage() {
                   <Mail className="w-5 h-5 text-blue-400" />
                   <span>Email</span>
                 </label>
-                <input
+                <Input
                   type="email"
                   required
                   placeholder="john@example.com"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                 />
               </div>
             </div>
@@ -141,13 +152,12 @@ export function CareerPage() {
                 <Phone className="w-5 h-5 text-blue-400" />
                 <span>Phone Number</span>
               </label>
-              <input
+              <Input
                 type="tel"
                 required
                 placeholder="+373 XXX XXX XX"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
               />
             </div>
 
@@ -158,12 +168,12 @@ export function CareerPage() {
                 <span>Upload CV</span>
               </label>
               <div className="relative">
-                <input
+                <Input
                   type="file"
                   required
                   accept=".pdf,.doc,.docx"
                   onChange={handleFileChange}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-700 file:text-white hover:file:bg-blue-600 file:cursor-pointer"
+                  className="file:mr-4 file:rounded-xl file:bg-blue-700 file:px-4 file:py-2 file:text-white hover:file:bg-blue-600"
                 />
               </div>
               {formData.cv && (
@@ -177,31 +187,31 @@ export function CareerPage() {
                 <MessageSquare className="w-5 h-5 text-blue-400" />
                 <span>Cover Letter / Message</span>
               </label>
-              <textarea
+              <Textarea
                 required
                 rows={6}
                 placeholder="Tell us why you'd be a great fit for our team..."
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500 resize-none"
               />
             </div>
 
             {/* Submit Button */}
             <div className="flex gap-4">
-              <button
+              <Button
                 type="submit"
-                className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full font-bold transition-colors"
+                className="flex-1 h-12"
               >
                 Submit Application
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => navigate('/')}
-                className="px-8 bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-full transition-colors"
+                variant="secondary"
+                className="h-12 px-8"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         </div>
