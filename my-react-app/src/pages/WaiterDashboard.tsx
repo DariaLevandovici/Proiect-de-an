@@ -60,13 +60,14 @@ export function WaiterDashboard() {
             <h2 className="text-2xl font-bold text-white mb-6">Table Status</h2>
             <div className="grid grid-cols-3 gap-4">
               {tables.map(table => (
-                <button
+                <Button
                   key={table.id}
                   onClick={() => {
                     setSelectedTable(table.id);
                     updateTableStatus(table.id, table.status === 'free' ? 'occupied' : 'free');
                   }}
-                  className={`p-6 rounded-2xl border-2 transition-all ${
+                  variant="outline"
+                  className={`h-auto p-6 border-2 transition-all ${
                     table.status === 'occupied'
                       ? 'bg-red-900/30 border-red-600'
                       : 'bg-green-900/30 border-green-600'
@@ -81,7 +82,7 @@ export function WaiterDashboard() {
                       {table.status.toUpperCase()}
                     </p>
                   </div>
-                </button>
+                </Button>
               ))}
             </div>
 
@@ -141,10 +142,11 @@ export function WaiterDashboard() {
                     <Button
                       onClick={() => handleSendToKitchen(order.id)}
                       disabled={order.status !== 'draft'}
+                      variant={order.status === 'draft' ? 'default' : 'secondary'}
                       className={`w-full ${
                         order.status === 'draft'
                           ? 'bg-blue-700 hover:bg-blue-600 text-white'
-                          : 'bg-green-800 text-green-200 cursor-not-allowed'
+                          : 'bg-gray-700 text-gray-300'
                       }`}
                     >
                       {order.status === 'draft' ? 'Send to Kitchen' : 'Order Sent'}
@@ -152,10 +154,11 @@ export function WaiterDashboard() {
                     <Button
                       onClick={() => updateOrderStatus(order.id, 'delivered')}
                       disabled={order.status !== 'ready'}
+                      variant={order.status === 'ready' ? 'success' : 'secondary'}
                       className={`w-full ${
                         order.status === 'ready'
                           ? 'bg-emerald-700 hover:bg-emerald-600 text-white'
-                          : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                          : 'bg-gray-700 text-gray-400'
                       }`}
                     >
                       {order.status === 'delivered' ? 'Delivered' : 'Mark as Delivered'}
