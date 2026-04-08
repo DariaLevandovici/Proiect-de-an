@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { Calendar, Clock, Users, Phone, User, MessageSquare } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Button } from '../ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export function ReservationPage() {
   const { addReservation } = useApp();
@@ -45,13 +49,12 @@ export function ReservationPage() {
                   <Calendar className="w-5 h-5 text-blue-400" />
                   <span>Date</span>
                 </label>
-                <input
+                <Input
                   type="date"
                   required
                   min={new Date().toISOString().split('T')[0]}
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none"
                 />
               </div>
 
@@ -60,17 +63,19 @@ export function ReservationPage() {
                   <Clock className="w-5 h-5 text-blue-400" />
                   <span>Time</span>
                 </label>
-                <select
-                  required
+                <Select
                   value={formData.time}
-                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
+                  onValueChange={(value) => setFormData({ ...formData, time: value })}
                 >
-                  <option value="">Select time</option>
-                  {timeSlots.map(time => (
-                    <option key={time} value={time}>{time}</option>
-                  ))}
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select time" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timeSlots.map(time => (
+                      <SelectItem key={time} value={time}>{time}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
@@ -102,13 +107,12 @@ export function ReservationPage() {
                   <User className="w-5 h-5 text-blue-400" />
                   <span>Full Name</span>
                 </label>
-                <input
+                <Input
                   type="text"
                   required
                   placeholder="John Doe"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                 />
               </div>
 
@@ -117,13 +121,12 @@ export function ReservationPage() {
                   <Phone className="w-5 h-5 text-blue-400" />
                   <span>Phone Number</span>
                 </label>
-                <input
+                <Input
                   type="tel"
                   required
                   placeholder="+373 XXX XXX XX"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
                 />
               </div>
             </div>
@@ -134,30 +137,30 @@ export function ReservationPage() {
                 <MessageSquare className="w-5 h-5 text-blue-400" />
                 <span>Special Requests (Optional)</span>
               </label>
-              <textarea
+              <Textarea
                 rows={4}
                 placeholder="Any dietary restrictions, allergies, or special occasions..."
                 value={formData.specialRequest}
                 onChange={(e) => setFormData({ ...formData, specialRequest: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500 resize-none"
               />
             </div>
 
             {/* Submit Button */}
             <div className="flex gap-4">
-              <button
+              <Button
                 type="submit"
-                className="flex-1 bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full font-bold transition-colors"
+                className="flex-1 h-12"
               >
                 Confirm Reservation
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => navigate('/')}
-                className="px-8 bg-gray-800 hover:bg-gray-700 text-white py-4 rounded-full transition-colors"
+                variant="secondary"
+                className="h-12 px-8"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
 

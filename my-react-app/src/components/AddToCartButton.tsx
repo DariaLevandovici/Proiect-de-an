@@ -9,10 +9,12 @@ interface AddToCartButtonProps {
     price: number;
     image: string;
   };
+  size?: 'default' | 'large';
 }
 
-export function AddToCartButton({ item }: AddToCartButtonProps) {
+export function AddToCartButton({ item, size = 'default' }: AddToCartButtonProps) {
   const { cart, addToCart, updateCartQuantity } = useApp();
+  const isLarge = size === 'large';
 
   const cartItem = cart.find(i => i.id === item.id);
   const quantity = cartItem?.quantity || 0;
@@ -21,7 +23,7 @@ export function AddToCartButton({ item }: AddToCartButtonProps) {
     return (
       <Button
         onClick={() => addToCart(item)}
-        className="h-12 w-full"
+        className={isLarge ? 'h-14 w-full text-base' : 'h-12 w-full'}
       >
         <Plus className="w-4 h-4" />
         Add to Cart
@@ -30,12 +32,14 @@ export function AddToCartButton({ item }: AddToCartButtonProps) {
   }
 
   return (
-    <div className="w-full bg-[#1e1e1e] border border-blue-700 text-white rounded-full h-[48px] flex items-center justify-between px-1 transition-all overflow-hidden">
+    <div className={`w-full bg-[#1e1e1e] border border-blue-700 text-white rounded-full flex items-center justify-between px-1 transition-all overflow-hidden ${
+      isLarge ? 'h-14' : 'h-12'
+    }`}>
       <Button
         onClick={() => updateCartQuantity(item.id, quantity - 1)}
         variant="ghost"
         size="icon"
-        className="h-10 w-10 rounded-xl text-gray-300 hover:bg-gray-800 flex-shrink-0"
+        className={`${isLarge ? 'h-12 w-12' : 'h-10 w-10'} rounded-xl text-gray-300 hover:bg-gray-800 flex-shrink-0`}
       >
         <Minus className="w-4 h-4 text-gray-300" />
       </Button>
@@ -45,7 +49,7 @@ export function AddToCartButton({ item }: AddToCartButtonProps) {
       <Button
         onClick={() => updateCartQuantity(item.id, quantity + 1)}
         size="icon"
-        className="h-10 w-10 rounded-xl flex-shrink-0"
+        className={`${isLarge ? 'h-12 w-12' : 'h-10 w-10'} rounded-xl flex-shrink-0`}
       >
         <Plus className="w-4 h-4 text-white" />
       </Button>

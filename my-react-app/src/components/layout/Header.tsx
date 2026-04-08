@@ -98,7 +98,7 @@ export function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
-                      className="h-10 px-4 data-[state=open]:rounded-b-none data-[state=open]:border-b-0"
+                      className="h-10 px-4"
                     >
                       Menu
                     </Button>
