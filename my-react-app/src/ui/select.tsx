@@ -10,10 +10,48 @@ import {
 
 import { cn } from "./utils";
 
+const MIN_DROPDOWN_OPEN_SPACE = 220;
+
+function hasEnoughSpaceBelow(element: HTMLElement | null, minHeight = MIN_DROPDOWN_OPEN_SPACE) {
+  if (!element || typeof window === "undefined") return true;
+  const rect = element.getBoundingClientRect();
+  return window.innerHeight - rect.bottom >= minHeight;
+}
+
 function Select({
+  open: controlledOpen,
+  defaultOpen,
+  onOpenChange,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Root>) {
-  return <SelectPrimitive.Root data-slot="select" {...props} />;
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
+  const isControlled = controlledOpen !== undefined;
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      const trigger = (document.activeElement as HTMLElement | null)?.closest(
+        '[data-slot="select-trigger"]',
+      ) as HTMLElement | null;
+
+      if (!hasEnoughSpaceBelow(trigger)) {
+        onOpenChange?.(false);
+        if (!isControlled) setInternalOpen(false);
+        return;
+      }
+    }
+
+    onOpenChange?.(nextOpen);
+    if (!isControlled) setInternalOpen(nextOpen);
+  };
+
+  return (
+    <SelectPrimitive.Root
+      data-slot="select"
+      open={isControlled ? controlledOpen : internalOpen}
+      onOpenChange={handleOpenChange}
+      {...props}
+    />
+  );
 }
 
 function SelectGroup({
@@ -60,7 +98,8 @@ function SelectContent({
   position = "popper",
   sideOffset = 0,
   side = "bottom",
-  avoidCollisions = false,
+  avoidCollisions = true,
+  collisionPadding = 8,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
   return (
@@ -68,7 +107,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative z-50 max-h-(--radix-select-content-available-height) origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 shadow-md",
+          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 relative z-50 max-h-[min(20rem,var(--radix-select-content-available-height))] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 shadow-md",
           position === "popper" && "w-[var(--radix-select-trigger-width)] min-w-[var(--radix-select-trigger-width)] max-w-[var(--radix-select-trigger-width)]",
           className
         )}
@@ -76,6 +115,7 @@ function SelectContent({
         sideOffset={sideOffset}
         side={side}
         avoidCollisions={avoidCollisions}
+        collisionPadding={collisionPadding}
         {...props}
       >
         <SelectScrollUpButton />
@@ -83,7 +123,7 @@ function SelectContent({
           className={cn(
             "w-full p-1 box-border",
             position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] scroll-my-1",
+            "max-h-[min(20rem,var(--radix-select-content-available-height))] scroll-my-1",
           )}
         >
           {children}

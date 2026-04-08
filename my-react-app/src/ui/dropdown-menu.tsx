@@ -6,10 +6,50 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 
 import { cn } from "./utils";
 
+const MIN_DROPDOWN_OPEN_SPACE = 220;
+
+function hasEnoughSpaceBelow(element: HTMLElement | null, minHeight = MIN_DROPDOWN_OPEN_SPACE) {
+  if (!element || typeof window === "undefined") return true;
+  const rect = element.getBoundingClientRect();
+  return window.innerHeight - rect.bottom >= minHeight;
+}
+
 function DropdownMenu({
+  open: controlledOpen,
+  defaultOpen,
+  onOpenChange,
+  modal = false,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
-  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
+  const isControlled = controlledOpen !== undefined;
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      const trigger = (document.activeElement as HTMLElement | null)?.closest(
+        '[data-slot="dropdown-menu-trigger"]',
+      ) as HTMLElement | null;
+
+      if (!hasEnoughSpaceBelow(trigger)) {
+        onOpenChange?.(false);
+        if (!isControlled) setInternalOpen(false);
+        return;
+      }
+    }
+
+    onOpenChange?.(nextOpen);
+    if (!isControlled) setInternalOpen(nextOpen);
+  };
+
+  return (
+    <DropdownMenuPrimitive.Root
+      data-slot="dropdown-menu"
+      modal={modal}
+      open={isControlled ? controlledOpen : internalOpen}
+      onOpenChange={handleOpenChange}
+      {...props}
+    />
+  );
 }
 
 function DropdownMenuPortal({
@@ -36,7 +76,8 @@ function DropdownMenuContent({
   sideOffset = 0,
   align = "start",
   side = "bottom",
-  avoidCollisions = false,
+  avoidCollisions = true,
+  collisionPadding = 8,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
   return (
@@ -47,8 +88,9 @@ function DropdownMenuContent({
         align={align}
         side={side}
         avoidCollisions={avoidCollisions}
+        collisionPadding={collisionPadding}
         className={cn(
-          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-(--radix-dropdown-menu-content-available-height) origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 p-1.5 shadow-md w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]",
+          "bg-[#242424] text-white data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-[min(20rem,var(--radix-dropdown-menu-content-available-height))] origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto box-border rounded-b-xl rounded-t-none border border-gray-700 border-t-0 p-1.5 shadow-md w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-w-[var(--radix-dropdown-menu-trigger-width)]",
           className,
         )}
         {...props}
