@@ -3,7 +3,7 @@ import { AddToCartButton } from '../../../components/AddToCartButton';
 
 import { useApp } from '../../../context/AppContext';
 
-const categories = ['Starters', 'Main Dishes', 'Desserts'];
+const categories = ['Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
 
 export function MenuSection() {
   const { searchQuery } = useApp();
@@ -73,14 +73,13 @@ export function MenuSection() {
             <h3 className="text-2xl font-bold text-white mb-8 pb-4 border-b border-gray-800">
               {category}
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="flex overflow-x-auto pb-6 hide-scrollbar gap-6 snap-x snap-mandatory">
               {menuItems
                 .filter((item) => item.category === category)
-                .slice(0, 3)
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700 flex flex-col h-full"
+                    className="min-w-[320px] flex-shrink-0 snap-start bg-[#242424] rounded-2xl overflow-hidden hover:transform hover:scale-105 transition-all duration-300 border border-gray-800 hover:border-blue-700 flex flex-col h-full"
                   >
                     <div className="h-48 overflow-hidden flex-shrink-0">
                       <img

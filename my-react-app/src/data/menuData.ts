@@ -230,4 +230,184 @@ export const menuItems: MenuItem[] = [
     ingredients: ['grapes'],
     dietary: ['vegan', 'gluten-free']
   },
+  {
+    id: 104,
+    name: 'English Breakfast',
+    description: 'Traditional full English breakfast with sausages, beans, and eggs',
+    price: 110,
+    category: 'Breakfast',
+    image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400&h=300&fit=crop',
+    ingredients: ['sausages', 'eggs', 'baked beans', 'toast', 'mushrooms'],
+    dietary: []
+  },
+  {
+    id: 105,
+    name: 'French Toast',
+    description: 'Brioche bread soaked in egg and milk, served with cinnamon and syrup',
+    price: 80,
+    category: 'Breakfast',
+    image: 'https://images.unsplash.com/photo-1484723091791-001c221eb47b?w=400&h=300&fit=crop',
+    ingredients: ['brioche', 'eggs', 'milk', 'cinnamon', 'maple syrup'],
+    dietary: ['vegetarian']
+  },
+  {
+    id: 106,
+    name: 'Smoothie Bowl',
+    description: 'Berry smoothie base topped with granola, coconut flakes, and fresh fruit',
+    price: 90,
+    category: 'Breakfast',
+    image: 'https://images.unsplash.com/photo-1494597564530-871f2b93ac55?w=400&h=300&fit=crop',
+    ingredients: ['mixed berries', 'banana', 'granola', 'coconut', 'almond milk'],
+    dietary: ['vegan', 'gluten-free']
+  },
+  {
+    id: 204,
+    name: 'Calamari Fritti',
+    description: 'Crispy fried squid rings served with garlic aioli and lemon',
+    price: 135,
+    category: 'Starters',
+    image: 'https://images.unsplash.com/photo-1599487405270-8cd522cc03f4?w=400&h=300&fit=crop',
+    ingredients: ['squid', 'flour', 'lemon', 'garlic', 'mayonnaise'],
+    dietary: []
+  },
+  {
+    id: 205,
+    name: 'Caprese Salad',
+    description: 'Fresh mozzarella, ripe tomatoes, sweet basil, and balsamic reduction',
+    price: 110,
+    category: 'Starters',
+    image: 'https://images.unsplash.com/photo-1529312266912-b33cfce2eefd?w=400&h=300&fit=crop',
+    ingredients: ['mozzarella', 'tomatoes', 'basil', 'balsamic vinegar', 'olive oil'],
+    dietary: ['vegetarian', 'gluten-free']
+  },
+  {
+    id: 206,
+    name: 'Beef Carpaccio',
+    description: 'Thinly sliced raw beef topped with arugula, parmesan shavings, and capers',
+    price: 165,
+    category: 'Starters',
+    image: 'https://images.unsplash.com/photo-1541525381831-29471f008f36?w=400&h=300&fit=crop',
+    ingredients: ['beef', 'arugula', 'parmesan', 'capers', 'olive oil'],
+    dietary: ['gluten-free']
+  },
+  {
+    id: 304,
+    name: 'Vegan Tacos',
+    description: 'Corn tortillas filled with jackfruit pulled "pork", pico de gallo, and avocado',
+    price: 120,
+    category: 'Vegan',
+    image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=300&fit=crop',
+    ingredients: ['jackfruit', 'corn tortillas', 'tomatoes', 'onions', 'avocado'],
+    dietary: ['vegan', 'gluten-free']
+  },
+  {
+    id: 305,
+    name: 'Zucchini Noodles',
+    description: 'Zoodles tossed in a rich tomato and walnut pesto sauce',
+    price: 115,
+    category: 'Vegan',
+    image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=400&h=300&fit=crop',
+    ingredients: ['zucchini', 'tomatoes', 'walnuts', 'basil', 'garlic'],
+    dietary: ['vegan', 'gluten-free']
+  },
+  {
+    id: 306,
+    name: 'Vegan Brownie',
+    description: 'Fudgy chocolate brownie made with sweet potato and almond flour',
+    price: 70,
+    category: 'Vegan',
+    image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&h=300&fit=crop',
+    ingredients: ['sweet potato', 'cocoa powder', 'almond flour', 'maple syrup'],
+    dietary: ['vegan', 'gluten-free']
+  },
+  {
+    id: 406,
+    name: 'Rack of Lamb',
+    description: 'Herb-crusted rack of lamb with garlic mashed potatoes and red wine reduction',
+    price: 450,
+    category: 'Main Dishes',
+    image: 'https://images.unsplash.com/photo-1544025162-811114215b22?w=400&h=300&fit=crop',
+    ingredients: ['lamb', 'potatoes', 'garlic', 'herbs', 'red wine'],
+    dietary: ['gluten-free']
+  },
+  {
+    id: 407,
+    name: 'Duck Breast',
+    description: 'Pan-seared duck breast with cherry sauce and roasted root vegetables',
+    price: 360,
+    category: 'Main Dishes',
+    image: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&h=300&fit=crop',
+    ingredients: ['duck', 'cherries', 'carrots', 'parsnips', 'butter'],
+    dietary: ['gluten-free']
+  },
+  {
+    id: 408,
+    name: 'Seafood Paella',
+    description: 'Traditional Spanish rice dish with saffron, mussels, shrimp, and chorizo',
+    price: 395,
+    category: 'Main Dishes',
+    image: 'https://images.unsplash.com/photo-1515443961218-a51367808e41?w=400&h=300&fit=crop',
+    ingredients: ['rice', 'saffron', 'mussels', 'shrimp', 'chorizo'],
+    dietary: []
+  },
+  {
+    id: 504,
+    name: 'Panna Cotta',
+    description: 'Vanilla bean panna cotta topped with a vibrant passion fruit coulis',
+    price: 85,
+    category: 'Desserts',
+    image: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=400&h=300&fit=crop',
+    ingredients: ['cream', 'sugar', 'gelatin', 'vanilla bean', 'passion fruit'],
+    dietary: ['gluten-free']
+  },
+  {
+    id: 505,
+    name: 'Creme Brulee',
+    description: 'Classic French custard dessert with a hard caramel top',
+    price: 95,
+    category: 'Desserts',
+    image: 'https://images.unsplash.com/photo-1470124182917-cc6e71b22cbc?w=400&h=300&fit=crop',
+    ingredients: ['cream', 'egg yolks', 'sugar', 'vanilla'],
+    dietary: ['vegetarian', 'gluten-free']
+  },
+  {
+    id: 506,
+    name: 'Gelato Selection',
+    description: 'Three scoops of artisanal Italian gelato (chocolate, pistachio, strawberry)',
+    price: 65,
+    category: 'Desserts',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c8a9e9cb?w=400&h=300&fit=crop',
+    ingredients: ['milk', 'sugar', 'cocoa', 'pistachios', 'strawberries'],
+    dietary: ['vegetarian', 'gluten-free']
+  },
+  {
+    id: 605,
+    name: 'Iced Matcha Latte',
+    description: 'Premium ceremonial grade matcha over milk and ice',
+    price: 55,
+    category: 'Drinks',
+    image: 'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&h=300&fit=crop',
+    ingredients: ['matcha powder', 'milk', 'ice', 'sugar'],
+    dietary: ['vegetarian', 'gluten-free']
+  },
+  {
+    id: 606,
+    name: 'Sparkling Water',
+    description: 'San Pellegrino sparkling water with a slice of lemon',
+    price: 30,
+    category: 'Drinks',
+    image: 'https://images.unsplash.com/photo-1560512165-274e1e07b8b7?w=400&h=300&fit=crop',
+    ingredients: ['mineral water', 'lemon'],
+    dietary: ['vegan', 'gluten-free']
+  },
+  {
+    id: 607,
+    name: 'Mojito Mocktail',
+    description: 'Refreshing blend of lime, fresh mint, sugar, and soda water',
+    price: 45,
+    category: 'Drinks',
+    image: 'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&h=300&fit=crop',
+    ingredients: ['lime', 'mint', 'sugar', 'soda water', 'ice'],
+    dietary: ['vegan', 'gluten-free']
+  }
 ];
