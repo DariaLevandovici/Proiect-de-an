@@ -61,8 +61,8 @@ export function MenuPage() {
       <div className="container mx-auto px-6">
         <div className="flex gap-8">
           {/* Sidebar */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24 bg-[#242424] rounded-2xl p-6 border border-gray-800">
+          <aside className="hidden lg:block w-64 flex-shrink-0 self-start">
+            <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain bg-[#242424] rounded-2xl p-6 border border-gray-800">
               <h2 className="text-xl font-bold text-white mb-6">Categories</h2>
               <ul className="space-y-2">
                 {categories.map(category => (
