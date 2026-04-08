@@ -14,9 +14,12 @@ interface Order {
   type: 'delivery' | 'takeaway' | 'dine-in';
   items: CartItem[];
   total: number;
-  status: 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
+  status: 'draft' | 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
   createdAt: string;
   address?: string;
+  tableNumber?: number;
+  clientName?: string;
+  comment?: string;
 }
 
 interface Reservation {
@@ -170,7 +173,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const cancelOrder = (id: string) => {
     const order = orders.find(o => o.id === id);
-    if (order && order.status === 'confirmed') {
+    if (order && (order.status === 'draft' || order.status === 'confirmed')) {
       setOrders(prev => prev.filter(o => o.id !== id));
     }
   };

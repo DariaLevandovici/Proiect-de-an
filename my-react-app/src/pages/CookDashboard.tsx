@@ -117,10 +117,16 @@ export function CookDashboard() {
                       </span>
                     </div>
 
-                    {/* Order Items (mock) */}
+                    {/* Order Items */}
                     <div className="mb-4 p-3 bg-gray-800 rounded-lg">
-                      <p className="text-gray-400 text-sm">Items: {order.items.length || 3} dishes</p>
+                      <p className="text-gray-400 text-sm">Items: {order.items.length} dishes</p>
+                      {order.tableNumber && (
+                        <p className="text-white text-sm mt-1">Table: #{order.tableNumber}</p>
+                      )}
                       <p className="text-white text-sm mt-1">Type: <span className="capitalize">{order.type}</span></p>
+                      {order.comment && (
+                        <p className="text-gray-300 text-sm mt-2">Notes: {order.comment}</p>
+                      )}
                     </div>
 
                     <button
@@ -162,7 +168,7 @@ export function CookDashboard() {
                     {/* Waiter Comments */}
                     <div className="mb-4 p-3 bg-gray-800 rounded-lg">
                       <p className="text-gray-400 text-xs mb-1">Waiter Notes:</p>
-                      <p className="text-white text-sm">Extra spicy, no onions</p>
+                      <p className="text-white text-sm">{order.comment || 'No special instructions'}</p>
                     </div>
 
                     <button

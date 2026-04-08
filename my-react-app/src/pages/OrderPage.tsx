@@ -4,11 +4,12 @@ import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
 
 type OrderType = 'delivery' | 'takeaway' | 'dine-in';
-type OrderStatus = 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
+type OrderStatus = 'draft' | 'confirmed' | 'in-preparation' | 'ready' | 'delivered';
 
-const statusSteps: OrderStatus[] = ['confirmed', 'in-preparation', 'ready', 'delivered'];
+const statusSteps: OrderStatus[] = ['draft', 'confirmed', 'in-preparation', 'ready', 'delivered'];
 
 const statusLabels: Record<OrderStatus, string> = {
+  draft: 'Created',
   confirmed: 'Order Confirmed',
   'in-preparation': 'In Preparation',
   ready: 'Ready',
@@ -177,7 +178,7 @@ export function OrderPage() {
             <div className="space-y-6">
               {orders.map(order => {
                 const currentStatusIndex = getStatusIndex(order.status);
-                const canCancel = order.status === 'confirmed';
+                const canCancel = order.status === 'draft' || order.status === 'confirmed';
 
                 return (
                   <div key={order.id} className="bg-[#242424] rounded-2xl p-6 border border-gray-800">
@@ -257,6 +258,7 @@ export function OrderPage() {
                         <p className="text-blue-400 text-sm">
                           Estimated time: {
                             order.status === 'confirmed' ? '30-40 minutes' :
+                              order.status === 'draft' ? 'Waiting to be sent to kitchen' :
                               order.status === 'in-preparation' ? '15-20 minutes' :
                                 '5 minutes'
                           }
