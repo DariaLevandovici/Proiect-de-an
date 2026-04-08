@@ -32,7 +32,7 @@ export function AddToCartButton({ item, size = 'default' }: AddToCartButtonProps
   }
 
   return (
-    <div className={`w-full bg-[#1e1e1e] border border-blue-700 text-white rounded-full flex items-center justify-between px-1 transition-all overflow-hidden ${
+    <div className={`w-full bg-[#1e1e1e] border border-gray-700 text-white rounded-xl flex items-center justify-between px-1 transition-all overflow-hidden ${
       isLarge ? 'h-14' : 'h-12'
     }`}>
       <Button
@@ -48,10 +48,11 @@ export function AddToCartButton({ item, size = 'default' }: AddToCartButtonProps
 
       <Button
         onClick={() => updateCartQuantity(item.id, quantity + 1)}
+        variant="ghost"
         size="icon"
-        className={`${isLarge ? 'h-12 w-12' : 'h-10 w-10'} rounded-xl flex-shrink-0`}
+        className={`${isLarge ? 'h-12 w-12' : 'h-10 w-10'} rounded-xl text-gray-300 hover:bg-gray-800 flex-shrink-0`}
       >
-        <Plus className="w-4 h-4 text-white" />
+        <Plus className="w-4 h-4 text-gray-300" />
       </Button>
     </div>
   );
