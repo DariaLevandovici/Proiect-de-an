@@ -19,7 +19,7 @@ import { Layout } from './components/layout/Layout';
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />
+    element: <Layout><HomePage /></Layout>
   },
   {
     path: '/menu',
