@@ -45,7 +45,7 @@ export function LoginPage() {
           <Button
             onClick={() => setLoginType('client')}
             variant="outline"
-            className={`h-auto p-6 border-2 ${
+            className={`h-auto p-6 border-2 flex flex-col items-center justify-center text-center ${
               loginType === 'client'
                 ? 'bg-blue-900/30 border-blue-600'
                 : 'bg-[#242424] border-gray-800'
@@ -58,7 +58,7 @@ export function LoginPage() {
           <Button
             onClick={() => setLoginType('staff')}
             variant="outline"
-            className={`h-auto p-6 border-2 ${
+            className={`h-auto p-6 border-2 flex flex-col items-center justify-center text-center ${
               loginType === 'staff'
                 ? 'bg-blue-900/30 border-blue-600'
                 : 'bg-[#242424] border-gray-800'

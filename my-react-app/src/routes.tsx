@@ -14,6 +14,7 @@ import { WaiterBillPage } from './pages/WaiterBillPage';
 import { CookDashboard } from './pages/CookDashboard';
 import { CookRecipesPage } from './pages/CookRecipesPage';
 import { ManagerDashboard } from './pages/ManagerDashboard';
+import { FeedbackPage } from './pages/FeedbackPage';
 import { Layout } from './components/layout/Layout';
 
 export const router = createBrowserRouter([
@@ -36,6 +37,10 @@ export const router = createBrowserRouter([
   {
     path: '/career',
     element: <Layout><CareerPage /></Layout>
+  },
+  {
+    path: '/feedback',
+    element: <Layout><FeedbackPage /></Layout>
   },
   {
     path: '/order',
