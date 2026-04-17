@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Filter, X, Search } from 'lucide-react';
+import { useSearchParams } from 'react-router';
 import { useApp } from '../context/AppContext';
 import { menuItems } from '../data/menuData';
 import { AddToCartButton } from '../components/AddToCartButton';
@@ -12,17 +13,24 @@ const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Des
 const dietaryOptions = ['All', 'vegan', 'vegetarian', 'gluten-free'];
 
 export function MenuPage() {
-  const { unavailableItems, searchQuery, setSearchQuery } = useApp();
+  const { unavailableItems } = useApp();
+  const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedDietary, setSelectedDietary] = useState('All');
   const [ingredientFilter, setIngredientFilter] = useState('');
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500 });
   const [showFilters, setShowFilters] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get('search') ?? '');
+
+  // Sync search box when URL param changes (e.g. from header search)
+  useEffect(() => {
+    setSearchTerm(searchParams.get('search') ?? '');
+  }, [searchParams]);
 
   const filteredItems = menuItems.filter(item => {
     // Global search (name or ingredients)
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
       const nameMatch = item.name.toLowerCase().includes(q);
       const ingMatch = item.ingredients.some(ing => ing.toLowerCase().includes(q));
       if (!nameMatch && !ingMatch) return false;
@@ -167,13 +175,13 @@ export function MenuPage() {
               <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
               <Input
                 type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search by dish name or ingredient..."
                 className="h-10 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
               />
-              {searchQuery && (
-                <Button onClick={() => setSearchQuery('')} variant="ghost" size="icon" className="text-gray-500 hover:text-white">
+              {searchTerm && (
+                <Button onClick={() => setSearchTerm('')} variant="ghost" size="icon" className="text-gray-500 hover:text-white">
                   <X className="w-4 h-4" />
                 </Button>
               )}
