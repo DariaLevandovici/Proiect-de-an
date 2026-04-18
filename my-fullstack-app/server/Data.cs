@@ -9,9 +9,11 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Product> Products => Set<Product>();
+    
     public DbSet<Ingredient> Ingredients => Set<Ingredient>();
     public DbSet<ProductIngredient> ProductIngredients => Set<ProductIngredient>();
+
+    public DbSet<Product> Products => Set<Product>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
