@@ -21,7 +21,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<ProductIngredient>()
             .HasOne(pi => pi.Product)
-            .WithMany()
+            .WithMany(p => p.ProductIngredients)
             .HasForeignKey(pi => pi.ProductId);
 
         modelBuilder.Entity<ProductIngredient>()

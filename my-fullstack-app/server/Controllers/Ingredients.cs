@@ -36,6 +36,12 @@ public class IngredientsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Ingredient>> CreateIngredient(Ingredient ingredient)
     {
+        var nameToFind = ingredient.Name?.Trim().ToLower();
+        if (await _context.Ingredients.AnyAsync(i => i.Name.Trim().ToLower() == nameToFind))
+        {
+            return BadRequest("An ingredient with this name already exists");
+        }
+
         _context.Ingredients.Add(ingredient);
         await _context.SaveChangesAsync();
 
@@ -47,6 +53,12 @@ public class IngredientsController : ControllerBase
     {
         if (id != ingredient.Id)
             return BadRequest();
+
+        var nameToFind = ingredient.Name?.Trim().ToLower();
+        if (await _context.Ingredients.AnyAsync(i => i.Id != id && i.Name.Trim().ToLower() == nameToFind))
+        {
+            return BadRequest("An ingredient with this name already exists");
+        }
 
         _context.Entry(ingredient).State = EntityState.Modified;
         await _context.SaveChangesAsync();

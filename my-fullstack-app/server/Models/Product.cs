@@ -14,4 +14,6 @@ public class Product
 
     /// <summary>JSON array string, e.g. ["vegetarian","gluten-free"]</summary>
     public string Dietary { get; set; } = "[]";
+
+    public ICollection<ProductIngredient> ProductIngredients { get; set; } = new List<ProductIngredient>();
 }

@@ -1,3 +1,10 @@
+export interface ProductIngredient {
+  ingredientId: number;
+  ingredientName?: string;
+  amountNeeded: number;
+  unit?: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -5,8 +12,9 @@ export interface Product {
   price: number;
   category: string;
   image: string;
-  ingredients: string; // JSON array string from backend e.g. '["egg","bacon"]'
-  dietary: string;     // JSON array string from backend e.g. '["vegan"]'
+  ingredients: string; // Legacy
+  dietary: string;     // Legacy
+  productIngredients: ProductIngredient[];
 }
 
 /** DTO for create/update — same fields minus id */
@@ -16,6 +24,7 @@ export interface ProductFormDto {
   price: number;
   category: string;
   image: string;
-  ingredients: string; // JSON array string
-  dietary: string;     // JSON array string
+  ingredients: string; 
+  dietary: string;     
+  productIngredients: ProductIngredient[];
 }
