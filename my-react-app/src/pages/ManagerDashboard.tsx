@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
+import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle, Database } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { ProductsManager } from '../components/ProductsManager';
 
 export function ManagerDashboard() {
   const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports'>('overview');
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports' | 'products'>('overview');
 
   const handleLogout = () => {
     logout();
@@ -88,7 +89,8 @@ export function ManagerDashboard() {
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'inventory', label: 'Inventory', icon: Package },
             { id: 'reservations', label: 'Reservations', icon: Calendar },
-            { id: 'reports', label: 'Reports', icon: Users }
+            { id: 'reports', label: 'Reports', icon: Users },
+            { id: 'products', label: 'Products (DB)', icon: Database }
           ].map(tab => (
             <Button
               key={tab.id}
@@ -323,6 +325,17 @@ export function ManagerDashboard() {
             <Button className="mt-6 w-full h-12">
               Generate Full Report
             </Button>
+          </div>
+        )}
+
+        {selectedTab === 'products' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">Products Management</h2>
+            <p className="text-gray-400 text-sm mb-8">
+              Manage products stored in the SQL Server database via the ASP.NET Core API
+              (<span className="text-blue-400 font-mono">http://localhost:5224/api/Products</span>).
+            </p>
+            <ProductsManager />
           </div>
         )}
       </div>
