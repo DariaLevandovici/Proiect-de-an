@@ -1,15 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { LogOut, ChefHat, Eye, AlertTriangle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { menuItems } from '../data/menuData';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { getMenuItems, type MenuItem } from '../services/menuService';
 
 export function CookDashboard() {
   const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
   const navigate = useNavigate();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(true);
+  const [menuError, setMenuError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [menuSearchTerm, setMenuSearchTerm] = useState('');
   const [menuFilter, setMenuFilter] = useState('All');
@@ -39,6 +42,32 @@ export function CookDashboard() {
   const preparingOrders = orders.filter(o => o.status === 'in-preparation');
   const lowStockItems = inventory.filter(item => item.quantity <= item.minStock);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadMenu = async () => {
+      try {
+        setIsLoadingMenu(true);
+        setMenuError(null);
+        const items = await getMenuItems();
+        if (!isMounted) return;
+        setMenuItems(items);
+      } catch {
+        if (!isMounted) return;
+        setMenuError('Unable to load menu availability.');
+      } finally {
+        if (isMounted) {
+          setIsLoadingMenu(false);
+        }
+      }
+    };
+
+    loadMenu();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Filter menu items for availability
   const filteredMenuItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(menuSearchTerm.toLowerCase());
@@ -47,8 +76,6 @@ export function CookDashboard() {
                          (menuFilter === 'Unavailable' && unavailableItems.includes(item.name));
     return matchesSearch && matchesFilter;
   });
-
-  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">
@@ -216,6 +243,14 @@ export function CookDashboard() {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {isLoadingMenu && (
+              <p className="col-span-full text-center text-gray-400 py-8">Loading menu...</p>
+            )}
+            {menuError && !isLoadingMenu && (
+              <p className="col-span-full text-center text-red-400 py-8">{menuError}</p>
+            )}
+            {!isLoadingMenu && !menuError && (
+              <>
             {filteredMenuItems.map(item => {
               const isUnavailable = unavailableItems.includes(item.name);
               return (
@@ -236,6 +271,8 @@ export function CookDashboard() {
                 </Button>
               );
             })}
+              </>
+            )}
           </div>
         </div>
       </div>
