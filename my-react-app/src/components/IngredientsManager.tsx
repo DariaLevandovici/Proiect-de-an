@@ -140,7 +140,7 @@ export function IngredientsManager() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancelEdit = () => {
+  const handleClearForm = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
     setSubmitStatus('idle');
@@ -190,7 +190,7 @@ export function IngredientsManager() {
     try {
       await deleteIngredient(id);
       setIngredients(prev => prev.filter(i => i.id !== id));
-      if (editingId === id) handleCancelEdit();
+      if (editingId === id) handleClearForm();
     } catch {
       alert("Failed to delete ingredient. Please try again.");
     } finally {
@@ -202,10 +202,7 @@ export function IngredientsManager() {
   const filteredIngredients = ingredients.filter(i => {
     if (!searchTerm) return true;
     const q = searchTerm.toLowerCase();
-    return (
-      i.name.toLowerCase().includes(q) ||
-      (i.category && i.category.toLowerCase().includes(q))
-    );
+    return i.name.toLowerCase().includes(q);
   });
 
   // ─── Render ──────────────────────────────────────────────────────────────────
@@ -227,7 +224,7 @@ export function IngredientsManager() {
           </div>
           {editingId !== null && (
             <button
-              onClick={handleCancelEdit}
+              onClick={handleClearForm}
               type="button"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-700 text-sm transition-all cursor-pointer"
             >
@@ -337,6 +334,14 @@ export function IngredientsManager() {
                 : editingId !== null
                 ? 'Save Changes'
                 : 'Add Ingredient'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClearForm}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold transition-all text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 cursor-pointer border border-gray-700"
+            >
+              <RefreshCw className="w-4 h-4" /> Clear Form
             </button>
             
             {submitStatus === 'success' && (

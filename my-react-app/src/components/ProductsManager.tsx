@@ -174,7 +174,7 @@ export function ProductsManager() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleCancelEdit = () => {
+  const handleClearForm = () => {
     setEditingId(null);
     setForm(EMPTY_FORM);
     setDietaryDisplay('');
@@ -255,7 +255,7 @@ export function ProductsManager() {
     try {
       await deleteProduct(id);
       setProducts(prev => prev.filter(p => p.id !== id));
-      if (editingId === id) handleCancelEdit();
+      if (editingId === id) handleClearForm();
     } catch {
       alert("Failed to delete product. Please try again.");
     } finally {
@@ -267,10 +267,7 @@ export function ProductsManager() {
   const filteredProducts = products.filter(p => {
     if (!searchTerm) return true;
     const q = searchTerm.toLowerCase();
-    return (
-      p.name.toLowerCase().includes(q) ||
-      (p.category && p.category.toLowerCase().includes(q))
-    );
+    return p.name.toLowerCase().includes(q);
   });
 
   const filteredSearchIngredients = dbIngredients.filter(i => 
@@ -292,7 +289,7 @@ export function ProductsManager() {
           </div>
           {editingId !== null && (
             <button
-              onClick={handleCancelEdit}
+              onClick={handleClearForm}
               type="button"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 border border-gray-700 text-sm transition-all cursor-pointer"
             >
@@ -467,7 +464,15 @@ export function ProductsManager() {
               ) : (
                 <Plus className="w-4 h-4" />
               )}
-              {submitStatus === 'loading' ? 'Processing…' : editingId !== null ? 'Save Product Changes' : 'Create Complete Product'}
+              {submitStatus === 'loading' ? 'Processing…' : editingId !== null ? 'Save Product Changes' : 'Create Product'}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClearForm}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all text-sm text-gray-400 hover:text-white bg-gray-800 hover:bg-gray-700 cursor-pointer border border-gray-700"
+            >
+              <RefreshCw className="w-4 h-4" /> Clear Form
             </button>
             
             {submitStatus === 'success' && (
