@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
+import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle, Database } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { ProductsManager } from '../components/ProductsManager';
+import { IngredientsManager } from '../components/IngredientsManager';
 
 export function ManagerDashboard() {
-  const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
+  const { user, logout, orders, reservations, inventory, updateReservationStatus } = useApp();
   const navigate = useNavigate();
-  const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports'>('overview');
+  const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports' | 'products'>('overview');
 
   const handleLogout = () => {
     logout();
@@ -88,7 +90,8 @@ export function ManagerDashboard() {
             { id: 'overview', label: 'Overview', icon: TrendingUp },
             { id: 'inventory', label: 'Inventory', icon: Package },
             { id: 'reservations', label: 'Reservations', icon: Calendar },
-            { id: 'reports', label: 'Reports', icon: Users }
+            { id: 'reports', label: 'Reports', icon: Users },
+            { id: 'products', label: 'Products (DB)', icon: Database }
           ].map(tab => (
             <Button
               key={tab.id}
@@ -151,65 +154,15 @@ export function ManagerDashboard() {
 
         {selectedTab === 'inventory' && (
           <div>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-white">Inventory Management</h2>
-              <Button className="px-6">
-                Add Item
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {inventory.map(item => {
-                const isLowStock = item.quantity <= item.minStock;
-                return (
-                  <div
-                    key={item.id}
-                    className={`bg-[#242424] rounded-2xl p-6 border-2 ${
-                      isLowStock ? 'border-yellow-600' : 'border-gray-800'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-xl font-bold text-white">{item.name}</h3>
-                      {isLowStock && (
-                        <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                      )}
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Current Stock:</span>
-                        <span className={`font-bold ${isLowStock ? 'text-yellow-400' : 'text-white'}`}>
-                          {item.quantity} {item.unit}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Min Stock:</span>
-                        <span className="text-gray-400">{item.minStock} {item.unit}</span>
-                      </div>
-
-                      <div className="flex gap-2 mt-4">
-                        <Button
-                          onClick={() => updateInventory(item.id, item.quantity - 5)}
-                          variant="destructive"
-                          className="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 h-9"
-                        >
-                          -5
-                        </Button>
-                        <Button
-                          onClick={() => updateInventory(item.id, item.quantity + 10)}
-                          variant="success"
-                          className="flex-1 h-9"
-                        >
-                          +10
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <h2 className="text-2xl font-bold text-white mb-6">Inventory Management</h2>
+            <p className="text-gray-400 text-sm mb-8">
+              Manage ingredients stored in the SQL Server database via the ASP.NET Core API
+              (<span className="text-blue-400 font-mono">http://localhost:5224/api/Ingredients</span>).
+            </p>
+            <IngredientsManager />
           </div>
         )}
+
 
         {selectedTab === 'reservations' && (
           <div>
@@ -323,6 +276,17 @@ export function ManagerDashboard() {
             <Button className="mt-6 w-full h-12">
               Generate Full Report
             </Button>
+          </div>
+        )}
+
+        {selectedTab === 'products' && (
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-6">Products Management</h2>
+            <p className="text-gray-400 text-sm mb-8">
+              Manage products stored in the SQL Server database via the ASP.NET Core API
+              (<span className="text-blue-400 font-mono">http://localhost:5224/api/Products</span>).
+            </p>
+            <ProductsManager />
           </div>
         )}
       </div>
