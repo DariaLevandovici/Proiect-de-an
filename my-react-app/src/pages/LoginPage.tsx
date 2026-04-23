@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { User, Users, Mail, Lock } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 export function LoginPage() {
   const { login } = useApp();
@@ -40,9 +42,10 @@ export function LoginPage() {
 
         {/* Login Type Selection */}
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <button
+          <Button
             onClick={() => setLoginType('client')}
-            className={`p-6 rounded-2xl border-2 transition-all ${
+            variant="outline"
+            className={`h-auto p-6 border-2 flex flex-col items-center justify-center text-center ${
               loginType === 'client'
                 ? 'bg-blue-900/30 border-blue-600'
                 : 'bg-[#242424] border-gray-800'
@@ -50,11 +53,12 @@ export function LoginPage() {
           >
             <User className={`w-10 h-10 mx-auto mb-3 ${loginType === 'client' ? 'text-blue-400' : 'text-gray-400'}`} />
             <h3 className="text-white font-bold">Client</h3>
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => setLoginType('staff')}
-            className={`p-6 rounded-2xl border-2 transition-all ${
+            variant="outline"
+            className={`h-auto p-6 border-2 flex flex-col items-center justify-center text-center ${
               loginType === 'staff'
                 ? 'bg-blue-900/30 border-blue-600'
                 : 'bg-[#242424] border-gray-800'
@@ -62,7 +66,7 @@ export function LoginPage() {
           >
             <Users className={`w-10 h-10 mx-auto mb-3 ${loginType === 'staff' ? 'text-blue-400' : 'text-gray-400'}`} />
             <h3 className="text-white font-bold">Staff</h3>
-          </button>
+          </Button>
         </div>
 
         {/* Login Form */}
@@ -73,13 +77,12 @@ export function LoginPage() {
                 <Mail className="w-5 h-5 text-blue-400" />
                 <span>Email</span>
               </label>
-              <input
+              <Input
                 type="email"
                 required
                 placeholder={loginType === 'staff' ? 'waiter@gastroflow.md / cook@gastroflow.md / manager@gastroflow.md' : 'your@email.com'}
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
               />
             </div>
 
@@ -88,22 +91,21 @@ export function LoginPage() {
                 <Lock className="w-5 h-5 text-blue-400" />
                 <span>Password</span>
               </label>
-              <input
+              <Input
                 type="password"
                 required
                 placeholder="••••••••"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
               />
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="w-full bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full font-bold transition-colors"
+              className="w-full h-12"
             >
               Sign In
-            </button>
+            </Button>
           </form>
 
           {/* Demo Credentials */}
@@ -124,12 +126,13 @@ export function LoginPage() {
         </div>
 
         <div className="text-center mt-6">
-          <button
+          <Button
             onClick={() => navigate('/')}
-            className="text-gray-400 hover:text-white transition-colors"
+            variant="ghost"
+            className="text-gray-400 hover:text-white"
           >
             Back to Home
-          </button>
+          </Button>
         </div>
       </div>
     </div>

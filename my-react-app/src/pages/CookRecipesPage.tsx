@@ -1,15 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Clock, Users, ChefHat } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { menuItems } from '../data/menuData';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { getMenuItems, type MenuItem } from '../services/menuService';
+
+interface RecipeItem extends MenuItem {
+  prepTime: string;
+  servings: number;
+  difficulty: string;
+  instructions: string[];
+}
 
 export function CookRecipesPage() {
   const navigate = useNavigate();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(true);
+  const [menuError, setMenuError] = useState<string | null>(null);
   const [recipeSearchTerm, setRecipeSearchTerm] = useState('');
   const [recipeCategory, setRecipeCategory] = useState('All');
-  const [selectedRecipe, setSelectedRecipe] = useState<typeof menuItems[0] | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<RecipeItem | null>(null);
 
-  const categories = ['All', 'Breakfast', 'Appetizers', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadMenu = async () => {
+      try {
+        setIsLoadingMenu(true);
+        setMenuError(null);
+        const items = await getMenuItems();
+        if (!isMounted) return;
+        setMenuItems(items);
+      } catch {
+        if (!isMounted) return;
+        setMenuError('Unable to load recipes.');
+      } finally {
+        if (isMounted) {
+          setIsLoadingMenu(false);
+        }
+      }
+    };
+
+    loadMenu();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Enhanced recipes with detailed preparation instructions
   const recipesWithInstructions = menuItems.map(item => ({
@@ -23,7 +61,7 @@ export function CookRecipesPage() {
   function getPreparationTime(category: string): string {
     const times: { [key: string]: string } = {
       'Breakfast': '15-20 min',
-      'Appetizers': '20-25 min',
+      'Starters': '20-25 min',
       'Vegan': '25-30 min',
       'Main Dishes': '35-45 min',
       'Desserts': '30-40 min',
@@ -39,7 +77,7 @@ export function CookRecipesPage() {
   function getDifficulty(category: string): string {
     const difficulty: { [key: string]: string } = {
       'Breakfast': 'Easy',
-      'Appetizers': 'Easy',
+      'Starters': 'Easy',
       'Vegan': 'Medium',
       'Main Dishes': 'Medium',
       'Desserts': 'Hard',
@@ -91,7 +129,7 @@ export function CookRecipesPage() {
         'Garnish with fresh basil and serve with pasta'
       ];
     }
-    
+
     // Breakfast
     else if (category === 'Breakfast') {
       return [
@@ -107,9 +145,9 @@ export function CookRecipesPage() {
         'Serve with toast and accompaniments'
       ];
     }
-    
-    // Appetizers
-    else if (category === 'Appetizers') {
+
+    // Starters
+    else if (category === 'Starters') {
       return [
         'Prepare and wash all fresh ingredients',
         'Preheat oven to 180°C if baking is required',
@@ -123,7 +161,7 @@ export function CookRecipesPage() {
         'Garnish and serve with appropriate dipping sauce'
       ];
     }
-    
+
     // Vegan
     else if (category === 'Vegan') {
       return [
@@ -139,7 +177,7 @@ export function CookRecipesPage() {
         'Serve over quinoa, rice, or noodles'
       ];
     }
-    
+
     // Desserts
     else if (category === 'Desserts') {
       return [
@@ -155,7 +193,7 @@ export function CookRecipesPage() {
         'Cool completely before frosting or decorating'
       ];
     }
-    
+
     // Drinks
     else if (category === 'Drinks') {
       return [
@@ -170,7 +208,7 @@ export function CookRecipesPage() {
         'Add straws or stirrers as needed'
       ];
     }
-    
+
     // Default instructions
     return [
       'Prepare all ingredients and equipment',
@@ -186,7 +224,10 @@ export function CookRecipesPage() {
 
   const filteredRecipes = recipesWithInstructions.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(recipeSearchTerm.toLowerCase()) ||
-                         item.ingredients.some(ing => ing.toLowerCase().includes(recipeSearchTerm.toLowerCase()));
+      // Only search ingredients if there are any (API items have empty array)
+      (item.ingredients.length > 0 && item.ingredients.some(ing =>
+        ing.toLowerCase().includes(recipeSearchTerm.toLowerCase())
+      ));
     const matchesCategory = recipeCategory === 'All' || item.category === recipeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -196,34 +237,44 @@ export function CookRecipesPage() {
       <div className="container mx-auto px-6 max-w-7xl">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
-          <button
+          <Button
             onClick={() => navigate('/dashboard/cook')}
-            className="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            variant="ghost"
+            size="icon"
           >
             <ArrowLeft className="w-6 h-6 text-white" />
-          </button>
+          </Button>
           <div className="flex-1">
             <h1 className="text-4xl font-bold text-white mb-2">Recipe Book</h1>
             <p className="text-gray-400">Complete preparation instructions for all dishes</p>
           </div>
         </div>
 
-        {selectedRecipe ? (
+        {isLoadingMenu ? (
+          <div className="text-center py-16">
+            <p className="text-gray-400 text-lg">Loading recipes...</p>
+          </div>
+        ) : menuError ? (
+          <div className="text-center py-16">
+            <p className="text-red-400 text-lg">{menuError}</p>
+          </div>
+        ) : selectedRecipe ? (
           /* Recipe Detail View */
           <div className="max-w-5xl mx-auto">
-            <button
+            <Button
               onClick={() => setSelectedRecipe(null)}
-              className="mb-6 text-blue-400 hover:text-blue-300 flex items-center gap-2"
+              variant="ghost"
+              className="mb-6 text-blue-400 hover:text-blue-300 flex items-center gap-2 px-0"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to recipes
-            </button>
+            </Button>
 
             <div className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800">
               {/* Recipe Header */}
               <div className="relative h-80">
-                <img 
-                  src={selectedRecipe.image} 
+                <img
+                  src={selectedRecipe.image}
                   alt={selectedRecipe.name}
                   className="w-full h-full object-cover"
                 />
@@ -273,7 +324,7 @@ export function CookRecipesPage() {
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-4">Preparation Instructions</h3>
                   <div className="space-y-4">
-                    {selectedRecipe.instructions.map((instruction, idx) => (
+                    {selectedRecipe.instructions.map((instruction: string, idx: number) => (
                       <div key={idx} className="flex gap-4 bg-gray-800 rounded-xl p-4">
                         <div className="flex-shrink-0 w-8 h-8 bg-blue-700 rounded-full flex items-center justify-center">
                           <span className="text-white font-bold text-sm">{idx + 1}</span>
@@ -284,17 +335,6 @@ export function CookRecipesPage() {
                   </div>
                 </div>
 
-                {/* Tips */}
-                <div className="mt-8 bg-blue-900/20 border border-blue-800 rounded-xl p-6">
-                  <h4 className="text-lg font-bold text-blue-400 mb-2">Chef's Tips</h4>
-                  <ul className="space-y-2 text-gray-300 text-sm">
-                    <li>• Always read through the entire recipe before starting</li>
-                    <li>• Prepare and measure all ingredients before cooking (mise en place)</li>
-                    <li>• Use fresh, high-quality ingredients for best results</li>
-                    <li>• Adjust seasoning to taste throughout the cooking process</li>
-                    <li>• Clean as you go to maintain an organized workspace</li>
-                  </ul>
-                </div>
               </div>
             </div>
           </div>
@@ -303,26 +343,26 @@ export function CookRecipesPage() {
           <>
             {/* Search and Filter */}
             <div className="mb-6 space-y-4">
-              <input
+              <Input
                 type="text"
                 placeholder="Search recipes or ingredients..."
                 value={recipeSearchTerm}
                 onChange={(e) => setRecipeSearchTerm(e.target.value)}
-                className="w-full bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
+                className="h-12 px-6"
               />
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {categories.map(cat => (
-                  <button
+                  <Button
                     key={cat}
                     onClick={() => setRecipeCategory(cat)}
-                    className={`px-6 py-2 rounded-full whitespace-nowrap transition-colors ${
-                      recipeCategory === cat
-                        ? 'bg-blue-700 text-white'
-                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                    }`}
+                    variant={recipeCategory === cat ? 'default' : 'secondary'}
+                    className={`h-10 px-6 whitespace-nowrap ${recipeCategory === cat
+                      ? 'bg-blue-700 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      }`}
                   >
                     {cat}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -335,14 +375,15 @@ export function CookRecipesPage() {
                 </div>
               ) : (
                 filteredRecipes.map(recipe => (
-                  <button
+                  <Button
                     key={recipe.id}
                     onClick={() => setSelectedRecipe(recipe)}
-                    className="bg-[#242424] rounded-2xl overflow-hidden border border-gray-800 hover:border-blue-700 transition-all text-left group"
+                    variant="outline"
+                    className="h-auto bg-[#242424] rounded-2xl overflow-hidden border-gray-800 hover:border-blue-700 transition-all text-left group flex-col items-start p-0"
                   >
                     <div className="aspect-video overflow-hidden">
-                      <img 
-                        src={recipe.image} 
+                      <img
+                        src={recipe.image}
                         alt={recipe.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
@@ -361,7 +402,7 @@ export function CookRecipesPage() {
                         </span>
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 ))
               )}
             </div>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router';
+import { Button } from '../ui/button';
 
 export function CartPage() {
   const { cart, updateCartQuantity, removeFromCart, clearCart } = useApp();
@@ -14,9 +15,6 @@ export function CartPage() {
 
   const handleCheckout = () => {
     if (cart.length === 0) return;
-    // In production, this would process payment
-    alert('Payment processed successfully!');
-    clearCart();
     navigate('/order');
   };
 
@@ -28,12 +26,12 @@ export function CartPage() {
             <ShoppingBag className="w-24 h-24 text-gray-700 mx-auto mb-6" />
             <h2 className="text-3xl font-bold text-white mb-4">Your cart is empty</h2>
             <p className="text-gray-400 mb-8">Add some delicious items to get started!</p>
-            <button
+            <Button
               onClick={() => navigate('/menu')}
-              className="bg-blue-700 hover:bg-blue-600 text-white px-8 py-3 rounded-full transition-colors"
+              className="px-8"
             >
               Browse Menu
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -64,29 +62,35 @@ export function CartPage() {
                       <h3 className="text-xl font-bold text-white mb-2">{item.name}</h3>
                       <p className="text-blue-400 font-bold">{item.price} MDL</p>
                     </div>
-                    <button
+                    <Button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-red-400 hover:text-red-300 transition-colors"
+                      variant="ghost"
+                      size="icon"
+                      className="text-red-400 hover:text-red-300 h-9 w-9"
                     >
                       <Trash2 className="w-5 h-5" />
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3 bg-gray-800 rounded-full px-4 py-2">
-                      <button
+                      <Button
                         onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-white h-7 w-7"
                       >
                         <Minus className="w-4 h-4" />
-                      </button>
+                      </Button>
                       <span className="text-white font-bold w-8 text-center">{item.quantity}</span>
-                      <button
+                      <Button
                         onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        variant="ghost"
+                        size="icon"
+                        className="text-gray-400 hover:text-white h-7 w-7"
                       >
                         <Plus className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                     <span className="text-gray-400">
                       Subtotal: <span className="text-white font-bold">{item.price * item.quantity} MDL</span>
@@ -96,12 +100,13 @@ export function CartPage() {
               </div>
             ))}
 
-            <button
+            <Button
               onClick={clearCart}
-              className="w-full bg-red-900/30 hover:bg-red-900/50 text-red-400 py-3 rounded-full transition-colors"
+              variant="destructive"
+              className="w-full bg-red-900/30 hover:bg-red-900/50 text-red-400"
             >
               Clear Cart
-            </button>
+            </Button>
           </div>
 
           {/* Order Summary */}
@@ -154,19 +159,20 @@ export function CartPage() {
                 </div>
               </div>
 
-              <button
+              <Button
                 onClick={handleCheckout}
-                className="w-full bg-blue-700 hover:bg-blue-600 text-white py-4 rounded-full font-bold transition-colors"
+                className="w-full h-12"
               >
                 Proceed to Checkout
-              </button>
+              </Button>
 
-              <button
+              <Button
                 onClick={() => navigate('/menu')}
-                className="w-full mt-3 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-full transition-colors"
+                variant="secondary"
+                className="w-full mt-3"
               >
                 Continue Shopping
-              </button>
+              </Button>
             </div>
           </div>
         </div>

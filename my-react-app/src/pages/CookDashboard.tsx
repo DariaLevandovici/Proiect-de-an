@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { LogOut, ChefHat, Eye, AlertTriangle, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { menuItems } from '../data/menuData';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { getMenuItems, type MenuItem } from '../services/menuService';
 
 export function CookDashboard() {
   const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
   const navigate = useNavigate();
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(true);
+  const [menuError, setMenuError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [menuSearchTerm, setMenuSearchTerm] = useState('');
   const [menuFilter, setMenuFilter] = useState('All');
@@ -36,6 +42,32 @@ export function CookDashboard() {
   const preparingOrders = orders.filter(o => o.status === 'in-preparation');
   const lowStockItems = inventory.filter(item => item.quantity <= item.minStock);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadMenu = async () => {
+      try {
+        setIsLoadingMenu(true);
+        setMenuError(null);
+        const items = await getMenuItems();
+        if (!isMounted) return;
+        setMenuItems(items);
+      } catch {
+        if (!isMounted) return;
+        setMenuError('Unable to load menu availability.');
+      } finally {
+        if (isMounted) {
+          setIsLoadingMenu(false);
+        }
+      }
+    };
+
+    loadMenu();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Filter menu items for availability
   const filteredMenuItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(menuSearchTerm.toLowerCase());
@@ -44,8 +76,6 @@ export function CookDashboard() {
                          (menuFilter === 'Unavailable' && unavailableItems.includes(item.name));
     return matchesSearch && matchesFilter;
   });
-
-  const categories = ['All', 'Breakfast', 'Appetizers', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">
@@ -57,20 +87,22 @@ export function CookDashboard() {
             <p className="text-gray-400">Welcome, {user?.name}</p>
           </div>
           <div className="flex gap-3">
-            <button
+            <Button
               onClick={() => navigate('/dashboard/cook/recipes')}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <BookOpen className="w-4 h-4" />
               Recipes
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleLogout}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-full transition-colors"
+              variant="secondary"
+              className="px-6"
             >
               <LogOut className="w-4 h-4" />
               Logout
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -117,19 +149,25 @@ export function CookDashboard() {
                       </span>
                     </div>
 
-                    {/* Order Items (mock) */}
+                    {/* Order Items */}
                     <div className="mb-4 p-3 bg-gray-800 rounded-lg">
-                      <p className="text-gray-400 text-sm">Items: {order.items.length || 3} dishes</p>
+                      <p className="text-gray-400 text-sm">Items: {order.items.length} dishes</p>
+                      {order.tableNumber && (
+                        <p className="text-white text-sm mt-1">Table: #{order.tableNumber}</p>
+                      )}
                       <p className="text-white text-sm mt-1">Type: <span className="capitalize">{order.type}</span></p>
+                      {order.comment && (
+                        <p className="text-gray-300 text-sm mt-2">Notes: {order.comment}</p>
+                      )}
                     </div>
 
-                    <button
+                    <Button
                       onClick={() => handlePickOrder(order.id)}
-                      className="w-full bg-blue-700 hover:bg-blue-600 text-white py-3 rounded-full transition-colors flex items-center justify-center gap-2"
+                      className="w-full"
                     >
                       <ChefHat className="w-4 h-4" />
                       Start Preparing
-                    </button>
+                    </Button>
                   </div>
                 ))
               )}
@@ -162,15 +200,16 @@ export function CookDashboard() {
                     {/* Waiter Comments */}
                     <div className="mb-4 p-3 bg-gray-800 rounded-lg">
                       <p className="text-gray-400 text-xs mb-1">Waiter Notes:</p>
-                      <p className="text-white text-sm">Extra spicy, no onions</p>
+                      <p className="text-white text-sm">{order.comment || 'No special instructions'}</p>
                     </div>
 
-                    <button
+                    <Button
                       onClick={() => handleCompleteOrder(order.id)}
-                      className="w-full bg-green-700 hover:bg-green-600 text-white py-3 rounded-full transition-colors"
+                      variant="success"
+                      className="w-full"
                     >
                       Mark as Ready
-                    </button>
+                    </Button>
                   </div>
                 ))
               )}
@@ -184,32 +223,42 @@ export function CookDashboard() {
           
           {/* Search and Filter */}
           <div className="mb-6 flex gap-4">
-            <input
+            <Input
               type="text"
               placeholder="Search menu items..."
               value={menuSearchTerm}
               onChange={(e) => setMenuSearchTerm(e.target.value)}
-              className="flex-1 bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none placeholder-gray-500"
+              className="flex-1 h-12 px-6"
             />
-            <select
-              value={menuFilter}
-              onChange={(e) => setMenuFilter(e.target.value)}
-              className="bg-gray-800 text-white px-6 py-3 rounded-full border border-gray-700 focus:border-blue-600 outline-none"
-            >
-              <option value="All">All Items</option>
-              <option value="Available">Available Only</option>
-              <option value="Unavailable">Unavailable Only</option>
-            </select>
+            <Select value={menuFilter} onValueChange={setMenuFilter}>
+              <SelectTrigger className="w-52">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="All">All Items</SelectItem>
+                <SelectItem value="Available">Available Only</SelectItem>
+                <SelectItem value="Unavailable">Unavailable Only</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {isLoadingMenu && (
+              <p className="col-span-full text-center text-gray-400 py-8">Loading menu...</p>
+            )}
+            {menuError && !isLoadingMenu && (
+              <p className="col-span-full text-center text-red-400 py-8">{menuError}</p>
+            )}
+            {!isLoadingMenu && !menuError && (
+              <>
             {filteredMenuItems.map(item => {
               const isUnavailable = unavailableItems.includes(item.name);
               return (
-                <button
+                <Button
                   key={item.id}
                   onClick={() => setItemAvailability(item.name, isUnavailable)}
-                  className={`p-4 rounded-lg border-2 transition-all text-left ${
+                  variant="outline"
+                  className={`h-auto p-4 border-2 transition-all text-left ${
                     isUnavailable
                       ? 'bg-red-900/30 border-red-600'
                       : 'bg-green-900/30 border-green-600'
@@ -219,9 +268,11 @@ export function CookDashboard() {
                   <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
                     {isUnavailable ? 'Unavailable' : 'Available'}
                   </p>
-                </button>
+                </Button>
               );
             })}
+              </>
+            )}
           </div>
         </div>
       </div>
