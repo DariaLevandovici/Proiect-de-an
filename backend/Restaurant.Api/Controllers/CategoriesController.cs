@@ -28,3 +28,36 @@ public class CategoriesController : ControllerBase
 
     [HttpGet("{id}")]
     [AllowAnonymous]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var category = await _categoryService.GetCategoryByIdAsync(id);
+        if (category == null) return NotFound();
+        return Ok(category);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Create([FromBody] CreateCategoryDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var created = await _categoryService.CreateCategoryAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(int id, [FromBody] CreateCategoryDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        await _categoryService.UpdateCategoryAsync(id, dto);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _categoryService.DeleteCategoryAsync(id);
+        return NoContent();
+    }
+}
