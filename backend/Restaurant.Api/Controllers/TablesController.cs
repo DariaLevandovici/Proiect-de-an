@@ -28,3 +28,44 @@ public class TablesController : ControllerBase
 
     [HttpGet("{id}")]
     [Authorize(Roles = "Admin,Waiter")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var table = await _tableService.GetTableByIdAsync(id);
+        if (table == null) return NotFound();
+        return Ok(table);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Create([FromBody] TableDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        var created = await _tableService.CreateTableAsync(dto);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Update(int id, [FromBody] TableDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        await _tableService.UpdateTableAsync(id, dto);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _tableService.DeleteTableAsync(id);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/status")]
+    [Authorize(Roles = "Admin,Waiter")]
+    public async Task<IActionResult> UpdateStatus(int id, [FromBody] bool isOccupied)
+    {
+        await _tableService.UpdateTableStatusAsync(id, isOccupied);
+        return NoContent();
+    }
+}
