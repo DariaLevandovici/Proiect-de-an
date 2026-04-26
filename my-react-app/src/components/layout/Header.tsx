@@ -3,12 +3,6 @@ import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '../../ui/dropdown-menu';
 
 export function Header() {
   const navigate = useNavigate();
@@ -94,24 +88,14 @@ export function Header() {
                   <User className="w-4 h-4" />
                   <span className="text-sm">{user.name}</span>
                 </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="h-10 px-4"
-                    >
-                      Menu
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => navigate('/account')}>
-                      <User className="mr-2 h-4 w-4" /> Account
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className="mr-2 h-4 w-4" /> Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="h-10 px-4"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </Button>
               </div>
             ) : (
               <Button 
