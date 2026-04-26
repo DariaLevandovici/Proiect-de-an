@@ -28,3 +28,19 @@ public class AuthController : ControllerBase
         }
 
         return Ok(result);
+         }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var result = await _authService.RegisterAsync(registerDto);
+        if (result == null)
+        {
+            return BadRequest(new { message = "Registration failed. Email might already be in use." });
+        }
+
+        return Ok(result);
+    }
+}
