@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using server.Data;
-using server.Models;
+using Restaurant.DataAccess.Context;
+using Restaurant.Domain.Entities;
 
-namespace server.Controllers;
+namespace Restaurant.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
