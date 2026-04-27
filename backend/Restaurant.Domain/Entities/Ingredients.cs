@@ -1,4 +1,4 @@
-namespace server.Models;
+namespace Restaurant.Domain.Entities;
 
 public class Ingredient
 {
