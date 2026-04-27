@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using server.Data;
+using Restaurant.DataAccess.Context;
 
 #nullable disable
 
-namespace server.Migrations
+namespace Restaurant.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -16,12 +16,12 @@ namespace server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.26")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("server.Models.Ingredient", b =>
+            modelBuilder.Entity("Restaurant.Domain.Entities.Ingredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace server.Migrations
                     b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("server.Models.Product", b =>
+            modelBuilder.Entity("Restaurant.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -92,7 +92,7 @@ namespace server.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("server.Models.ProductIngredient", b =>
+            modelBuilder.Entity("Restaurant.Domain.Entities.ProductIngredient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,15 +118,15 @@ namespace server.Migrations
                     b.ToTable("ProductIngredients");
                 });
 
-            modelBuilder.Entity("server.Models.ProductIngredient", b =>
+            modelBuilder.Entity("Restaurant.Domain.Entities.ProductIngredient", b =>
                 {
-                    b.HasOne("server.Models.Ingredient", "Ingredient")
+                    b.HasOne("Restaurant.Domain.Entities.Ingredient", "Ingredient")
                         .WithMany()
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("server.Models.Product", "Product")
+                    b.HasOne("Restaurant.Domain.Entities.Product", "Product")
                         .WithMany("ProductIngredients")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -137,7 +137,7 @@ namespace server.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("server.Models.Product", b =>
+            modelBuilder.Entity("Restaurant.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductIngredients");
                 });

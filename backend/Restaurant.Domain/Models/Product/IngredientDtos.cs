@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace server.Models;
+namespace Restaurant.Domain.Entities;
 
 public class ProductDto
 {

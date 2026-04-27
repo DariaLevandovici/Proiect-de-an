@@ -1,6 +1,6 @@
-using server.Models;
+using Restaurant.Domain.Entities;
 
-namespace server.Data;
+namespace Restaurant.DataAccess.Seed;
 
 
 public static class SeedData
