@@ -10,6 +10,7 @@ export function FeedbackPage() {
     email: '',
     message: ''
   });
+  const [successMessage, setSuccessMessage] = useState('');
   const [errors, setErrors] = useState({
     name: '',
     email: '',
@@ -28,10 +29,11 @@ export function FeedbackPage() {
     setErrors(nextErrors);
 
     if (nextErrors.name || nextErrors.email || nextErrors.message) {
+      setSuccessMessage('');
       return;
     }
 
-    alert('Feedback submitted successfully!');
+    setSuccessMessage('Thank you for your feedback');
     setFormData({
       name: '',
       email: '',
@@ -54,6 +56,12 @@ export function FeedbackPage() {
 
         <div className="bg-[#242424] rounded-2xl p-8 border border-gray-800">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {successMessage && (
+              <div className="rounded-lg border border-green-700 bg-green-900/20 px-4 py-3 text-sm text-green-300">
+                {successMessage}
+              </div>
+            )}
+
             <div>
               <label className="flex items-center gap-2 text-white mb-3">
                 <User className="w-5 h-5 text-blue-400" />
@@ -66,6 +74,7 @@ export function FeedbackPage() {
                 onChange={(e) => {
                   setFormData({ ...formData, name: e.target.value });
                   setErrors({ ...errors, name: '' });
+                  setSuccessMessage('');
                 }}
               />
               {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name}</p>}
@@ -83,6 +92,7 @@ export function FeedbackPage() {
                 onChange={(e) => {
                   setFormData({ ...formData, email: e.target.value });
                   setErrors({ ...errors, email: '' });
+                  setSuccessMessage('');
                 }}
               />
               {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
@@ -100,6 +110,7 @@ export function FeedbackPage() {
                 onChange={(e) => {
                   setFormData({ ...formData, message: e.target.value });
                   setErrors({ ...errors, message: '' });
+                  setSuccessMessage('');
                 }}
               />
               {errors.message && <p className="mt-2 text-sm text-red-400">{errors.message}</p>}
