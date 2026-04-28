@@ -6,6 +6,12 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
+const mockStaffAccounts = [
+  { id: 1, name: 'Andrei Popa', role: 'Waiter' },
+  { id: 2, name: 'Elena Rusu', role: 'Cook' },
+  { id: 3, name: 'Mihai Ceban', role: 'Waiter' },
+];
+
 export function ManagerDashboard() {
   const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
   const navigate = useNavigate();
@@ -167,6 +173,23 @@ export function ManagerDashboard() {
                   </Button>
                 </div>
               </form>
+            </div>
+
+            <div className="bg-[#242424] rounded-2xl p-6 border border-gray-800">
+              <h2 className="text-2xl font-bold text-white mb-2">Staff Accounts</h2>
+              <p className="text-gray-400 mb-6">Current mock staff members in the system.</p>
+
+              <div className="space-y-3">
+                {mockStaffAccounts.map((staff) => (
+                  <div
+                    key={staff.id}
+                    className="flex items-center justify-between rounded-xl border border-gray-800 bg-[#1f1f1f] px-4 py-4"
+                  >
+                    <span className="font-semibold text-white">{staff.name}</span>
+                    <span className="text-sm text-blue-400">{staff.role}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Recent Orders */}
