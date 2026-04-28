@@ -1,19 +1,12 @@
-import { useState } from 'react';
-import { Menu, Search, ShoppingCart, User, LogOut, X } from 'lucide-react';
+import { Menu, Search, ShoppingCart, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 
 export function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
-
-  const handleMobileNavigation = (path: string) => {
-    setIsMobileMenuOpen(false);
-    navigate(path);
-  };
 
   const handleLogout = () => {
     logout();
@@ -77,11 +70,9 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="md:hidden rounded-xl text-gray-300 hover:text-white"
-              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              aria-expanded={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              aria-label="Open navigation menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <Menu className="w-6 h-6" />
             </Button>
 
             {/* Search Bar */}
@@ -127,39 +118,6 @@ export function Header() {
             )}
           </div>
         </div>
-
-        {isMobileMenuOpen && (
-          <nav className="mt-4 flex flex-col gap-2 border-t border-gray-800 pt-4 md:hidden">
-            <Button
-              variant="ghost"
-              className="justify-start text-gray-300 hover:text-white"
-              onClick={() => handleMobileNavigation('/reservation')}
-            >
-              Reservation
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start text-gray-300 hover:text-white"
-              onClick={() => handleMobileNavigation('/order')}
-            >
-              Order
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start text-gray-300 hover:text-white"
-              onClick={() => handleMobileNavigation('/menu')}
-            >
-              Meniu
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start text-gray-300 hover:text-white"
-              onClick={() => handleMobileNavigation('/career')}
-            >
-              Career
-            </Button>
-          </nav>
-        )}
       </div>
     </header>
   );
