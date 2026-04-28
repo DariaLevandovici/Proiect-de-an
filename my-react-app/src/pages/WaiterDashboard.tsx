@@ -9,6 +9,24 @@ export function WaiterDashboard() {
   const navigate = useNavigate();
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
+  const tableStatusStyles = {
+    free: {
+      card: 'bg-green-900/30 border-green-600',
+      label: 'text-green-400',
+      text: 'FREE',
+    },
+    occupied: {
+      card: 'bg-red-900/30 border-red-600',
+      label: 'text-red-400',
+      text: 'OCCUPIED',
+    },
+    reserved: {
+      card: 'bg-yellow-900/30 border-yellow-600',
+      label: 'text-yellow-400',
+      text: 'RESERVED',
+    },
+  } as const;
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -68,18 +86,14 @@ export function WaiterDashboard() {
                   }}
                   variant="outline"
                   className={`h-auto p-6 border-2 transition-all ${
-                    table.status === 'occupied'
-                      ? 'bg-red-900/30 border-red-600'
-                      : 'bg-green-900/30 border-green-600'
+                    tableStatusStyles[table.status].card
                   } ${selectedTable === table.id ? 'ring-4 ring-blue-600/30' : ''}`}
                 >
                   <div className="text-center">
                     <p className="text-2xl font-bold text-white mb-1">#{table.number}</p>
                     <p className="text-sm text-gray-400">{table.seats} seats</p>
-                    <p className={`text-xs mt-2 font-semibold ${
-                      table.status === 'occupied' ? 'text-red-400' : 'text-green-400'
-                    }`}>
-                      {table.status.toUpperCase()}
+                    <p className={`text-xs mt-2 font-semibold ${tableStatusStyles[table.status].label}`}>
+                      {tableStatusStyles[table.status].text}
                     </p>
                   </div>
                 </Button>
@@ -95,6 +109,10 @@ export function WaiterDashboard() {
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded bg-red-600"></div>
                 <span className="text-sm text-gray-400">Occupied</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 rounded bg-yellow-600"></div>
+                <span className="text-sm text-gray-400">Reserved</span>
               </div>
             </div>
           </div>
