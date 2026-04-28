@@ -6,6 +6,7 @@ import { ReservationPage } from './pages/ReservationPage';
 import { CareerPage } from './pages/CareerPage';
 import { OrderPage } from './pages/OrderPage';
 import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { AccountPage } from './pages/AccountPage';
 import { ClientDashboard } from './pages/ClientDashboard';
 import { WaiterDashboard } from './pages/WaiterDashboard';
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
   {
     path: '/login',
     element: <Layout showFooter={false}><LoginPage /></Layout>
+  },
+  {
+    path: '/register',
+    element: <Layout showFooter={false}><RegisterPage /></Layout>
   },
   {
     path: '/account',
