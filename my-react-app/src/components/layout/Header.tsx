@@ -9,6 +9,23 @@ export function Header() {
   const [language, setLanguage] = useState<'RO' | 'EN'>('RO');
   const navigate = useNavigate();
   const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
+  const labels = language === 'RO'
+    ? {
+        reservation: 'Rezervare',
+        order: 'Comandă',
+        menu: 'Meniu',
+        career: 'Cariere',
+        login: 'Autentificare',
+        logout: 'Deconectare',
+      }
+    : {
+        reservation: 'Reservation',
+        order: 'Order',
+        menu: 'Meniu',
+        career: 'Career',
+        login: 'Login',
+        logout: 'Logout',
+      };
 
   const handleLogout = () => {
     logout();
@@ -47,16 +64,16 @@ export function Header() {
           {/* Central Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/reservation')}>
-              Reservation
+              {labels.reservation}
             </Button>
             <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/order')}>
-              Order
+              {labels.order}
             </Button>
             <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/menu')}>
-              Meniu
+              {labels.menu}
             </Button>
             <Button variant="ghost" className="text-gray-300 hover:text-white px-2" onClick={() => navigate('/career')}>
-              Career
+              {labels.career}
             </Button>
             {user && user.role === 'client' && (
               <Button variant="ghost" className="text-blue-400 hover:text-blue-300 px-2" onClick={() => navigate('/dashboard/client')}>
@@ -70,14 +87,14 @@ export function Header() {
             <Button
               type="button"
               variant="outline"
-              className="h-9 px-3 text-xs font-semibold tracking-wide text-gray-300"
+              className="flex h-10 w-14 flex-shrink-0 items-center justify-center px-0 text-center text-xs font-semibold leading-none tracking-wide text-gray-300"
               onClick={() => setLanguage((current) => (current === 'RO' ? 'EN' : 'RO'))}
             >
               {language}
             </Button>
 
             {/* Search Bar */}
-            <div className="hidden md:flex items-center gap-2 w-64">
+            <div className="hidden w-72 flex-shrink-0 items-center gap-2 md:flex">
               <Search className="w-4 h-4 text-gray-400 mr-2" />
               <Input
                 type="text"
@@ -102,19 +119,19 @@ export function Header() {
                 <Button
                   onClick={handleLogout}
                   variant="outline"
-                  className="h-10 px-4"
+                  className="flex h-10 min-w-[150px] flex-shrink-0 items-center justify-center px-4"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>Logout</span>
+                  <span>{labels.logout}</span>
                 </Button>
               </div>
             ) : (
               <Button 
                 onClick={() => navigate('/login')}
-                className="h-10 px-6"
+                className="flex h-10 min-w-[150px] flex-shrink-0 items-center justify-center px-6"
               >
                 <User className="w-4 h-4" />
-                <span>Login</span>
+                <span>{labels.login}</span>
               </Button>
             )}
           </div>
