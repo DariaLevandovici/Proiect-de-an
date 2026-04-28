@@ -13,7 +13,7 @@ const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Des
 const dietaryOptions = ['All', 'vegan', 'vegetarian', 'gluten-free'];
 
 export function MenuPage() {
-  const { unavailableItems } = useApp();
+  const { unavailableItems, searchQuery } = useApp();
   const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedDietary, setSelectedDietary] = useState('All');
@@ -28,9 +28,16 @@ export function MenuPage() {
   }, [searchParams]);
 
   const filteredItems = menuItems.filter(item => {
-    // Global search (name or ingredients)
+    // Local and global search (name or ingredients)
     if (searchTerm) {
       const q = searchTerm.toLowerCase();
+      const nameMatch = item.name.toLowerCase().includes(q);
+      const ingMatch = item.ingredients.some(ing => ing.toLowerCase().includes(q));
+      if (!nameMatch && !ingMatch) return false;
+    }
+
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
       const nameMatch = item.name.toLowerCase().includes(q);
       const ingMatch = item.ingredients.some(ing => ing.toLowerCase().includes(q));
       if (!nameMatch && !ingMatch) return false;
