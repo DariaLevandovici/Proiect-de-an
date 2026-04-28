@@ -10,11 +10,34 @@ export function FeedbackPage() {
     email: '',
     message: ''
   });
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    const nextErrors = {
+      name: formData.name.trim() ? '' : 'Name is required.',
+      email: formData.email.trim() ? '' : 'Email is required.',
+      message: formData.message.trim() ? '' : 'Message is required.'
+    };
+
+    setErrors(nextErrors);
+
+    if (nextErrors.name || nextErrors.email || nextErrors.message) {
+      return;
+    }
+
     alert('Feedback submitted successfully!');
     setFormData({
+      name: '',
+      email: '',
+      message: ''
+    });
+    setErrors({
       name: '',
       email: '',
       message: ''
@@ -38,11 +61,14 @@ export function FeedbackPage() {
               </label>
               <Input
                 type="text"
-                required
                 placeholder="Your name"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  setErrors({ ...errors, name: '' });
+                }}
               />
+              {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name}</p>}
             </div>
 
             <div>
@@ -52,11 +78,14 @@ export function FeedbackPage() {
               </label>
               <Input
                 type="email"
-                required
                 placeholder="you@example.com"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  setErrors({ ...errors, email: '' });
+                }}
               />
+              {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
             </div>
 
             <div>
@@ -66,11 +95,14 @@ export function FeedbackPage() {
               </label>
               <Textarea
                 rows={6}
-                required
                 placeholder="Write your feedback here..."
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                onChange={(e) => {
+                  setFormData({ ...formData, message: e.target.value });
+                  setErrors({ ...errors, message: '' });
+                }}
               />
+              {errors.message && <p className="mt-2 text-sm text-red-400">{errors.message}</p>}
             </div>
 
             <Button type="submit" className="w-full h-12">
