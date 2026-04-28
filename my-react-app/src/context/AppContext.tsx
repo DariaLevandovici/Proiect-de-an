@@ -39,7 +39,7 @@ interface Table {
   id: number;
   number: number;
   seats: number;
-  status: 'free' | 'occupied';
+  status: 'free' | 'occupied' | 'reserved';
 }
 
 interface User {
@@ -74,7 +74,7 @@ interface AppContextType {
   addReservation: (reservation: Omit<Reservation, 'id' | 'status'>) => void;
   updateReservationStatus: (id: string, status: Reservation['status']) => void;
   tables: Table[];
-  updateTableStatus: (id: number, status: 'free' | 'occupied') => void;
+  updateTableStatus: (id: number, status: Table['status']) => void;
   inventory: InventoryItem[];
   updateInventory: (id: string, quantity: number) => void;
   unavailableItems: string[];
@@ -196,7 +196,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setReservations(prev => prev.map(res => res.id === id ? { ...res, status } : res));
   };
 
-  const updateTableStatus = (id: number, status: 'free' | 'occupied') => {
+  const updateTableStatus = (id: number, status: Table['status']) => {
     setTables(prev => prev.map(table => table.id === id ? { ...table, status } : table));
   };
 
