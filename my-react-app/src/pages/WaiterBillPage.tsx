@@ -8,7 +8,7 @@ export function WaiterBillPage() {
   const navigate = useNavigate();
   const { orders, tables, updateTableStatus } = useApp();
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
-  const [splitCount, setSplitCount] = useState(2);
+  const [splitCountInput, setSplitCountInput] = useState('2');
 
   // Filter orders for dine-in that are ready or delivered
   const tableOrders = orders.filter(o => o.type === 'dine-in' && (o.status === 'ready' || o.status === 'delivered'));
@@ -20,7 +20,11 @@ export function WaiterBillPage() {
   const totalBill = selectedTableOrders.reduce((sum, order) => sum + order.total, 0);
   const tax = totalBill * 0.1;
   const grandTotal = totalBill + tax;
-  const amountPerPerson = splitCount > 0 ? grandTotal / splitCount : grandTotal;
+  const parsedSplitCount = Number(splitCountInput);
+  const isSplitCountInvalid =
+    splitCountInput.trim() === '' || !Number.isInteger(parsedSplitCount) || parsedSplitCount < 1;
+  const splitCount = isSplitCountInvalid ? 1 : parsedSplitCount;
+  const amountPerPerson = grandTotal / splitCount;
 
   const handlePrintBill = () => {
     window.print();
@@ -179,10 +183,13 @@ export function WaiterBillPage() {
                         <input
                           type="number"
                           min="1"
-                          value={splitCount}
-                          onChange={(e) => setSplitCount(Math.max(1, Number(e.target.value) || 1))}
+                          value={splitCountInput}
+                          onChange={(e) => setSplitCountInput(e.target.value)}
                           className="h-11 w-full rounded-lg border border-gray-700 bg-[#242424] px-4 text-white outline-none transition-colors focus:border-blue-600"
                         />
+                        {isSplitCountInvalid && (
+                          <p className="mt-2 text-sm text-red-400">Number of people must be at least 1.</p>
+                        )}
                       </div>
                       <div className="rounded-xl border border-blue-800 bg-blue-900/20 px-5 py-4">
                         <p className="text-sm text-gray-400">Amount per person</p>
