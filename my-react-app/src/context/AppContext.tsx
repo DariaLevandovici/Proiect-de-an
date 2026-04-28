@@ -22,6 +22,7 @@ interface Order {
   comment?: string;
   origin?: 'client' | 'waiter';
   createdByUserId?: string;
+  finalized?: boolean;
 }
 
 interface Reservation {
@@ -69,6 +70,7 @@ interface AppContextType {
   orders: Order[];
   addOrder: (order: Omit<Order, 'id' | 'createdAt'>) => void;
   updateOrderStatus: (id: string, status: Order['status']) => void;
+  finalizeOrder: (id: string) => void;
   cancelOrder: (id: string) => void;
   reservations: Reservation[];
   addReservation: (reservation: Omit<Reservation, 'id' | 'status'>) => boolean;
@@ -176,6 +178,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setOrders(prev => prev.map(order => order.id === id ? { ...order, status } : order));
   };
 
+  const finalizeOrder = (id: string) => {
+    setOrders(prev => prev.map(order => order.id === id ? { ...order, finalized: true } : order));
+  };
+
   const cancelOrder = (id: string) => {
     const order = orders.find(o => o.id === id);
     if (order && (order.status === 'draft' || order.status === 'confirmed')) {
@@ -238,6 +244,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       orders,
       addOrder,
       updateOrderStatus,
+      finalizeOrder,
       cancelOrder,
       reservations,
       addReservation,

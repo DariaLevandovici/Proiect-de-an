@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 
 export function WaiterBillPage() {
   const navigate = useNavigate();
-  const { orders, tables, updateTableStatus } = useApp();
+  const { orders, tables, updateTableStatus, finalizeOrder } = useApp();
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const [splitCountInput, setSplitCountInput] = useState('2');
 
@@ -35,6 +35,7 @@ export function WaiterBillPage() {
       alert('Please select a table');
       return;
     }
+    selectedTableOrders.forEach((order) => finalizeOrder(order.id));
     alert(`Bill generated for Table ${selectedTable}\nTotal: ${grandTotal.toFixed(2)} MDL`);
     const relatedTable = tables.find((table) => table.number === selectedTable);
     if (relatedTable) {
