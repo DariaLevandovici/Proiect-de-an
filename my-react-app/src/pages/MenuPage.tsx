@@ -198,7 +198,7 @@ export function MenuPage() {
               {filteredItems.map(item => (
                 <Card
                   key={item.id}
-                  className="overflow-hidden hover:border-blue-700 transition-all hover:scale-[1.02] flex flex-col h-full"
+                  className="flex h-full flex-col overflow-hidden transition-transform duration-300 ease-out hover:scale-[1.02] hover:border-blue-700"
                 >
                   <div className="h-48 overflow-hidden flex-shrink-0">
                     <img
