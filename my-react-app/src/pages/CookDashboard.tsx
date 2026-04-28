@@ -13,6 +13,7 @@ export function CookDashboard() {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [menuSearchTerm, setMenuSearchTerm] = useState('');
   const [menuFilter, setMenuFilter] = useState('All');
+  const [unavailableIngredients, setUnavailableIngredients] = useState<string[]>([]);
 
   const handleLogout = () => {
     logout();
@@ -48,7 +49,17 @@ export function CookDashboard() {
     return matchesSearch && matchesFilter;
   });
 
-  const categories = ['All', 'Breakfast', 'Starters', 'Vegan', 'Main Dishes', 'Desserts', 'Drinks'];
+  const ingredientItems = Array.from(
+    new Set(menuItems.flatMap((item) => item.ingredients.map((ingredient) => ingredient.toLowerCase())))
+  ).sort((a, b) => a.localeCompare(b));
+
+  const toggleIngredientAvailability = (ingredient: string) => {
+    setUnavailableIngredients((prev) =>
+      prev.includes(ingredient)
+        ? prev.filter((item) => item !== ingredient)
+        : [...prev, ingredient]
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#1a1a1a] pt-24 pb-16">
@@ -230,6 +241,32 @@ export function CookDashboard() {
                   }`}
                 >
                   <p className="text-white font-bold text-sm mb-1">{item.name}</p>
+                  <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
+                    {isUnavailable ? 'Unavailable' : 'Available'}
+                  </p>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Ingredients Availability</h2>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+            {ingredientItems.map((ingredient) => {
+              const isUnavailable = unavailableIngredients.includes(ingredient);
+              return (
+                <Button
+                  key={ingredient}
+                  onClick={() => toggleIngredientAvailability(ingredient)}
+                  variant="outline"
+                  className={`h-auto p-4 border-2 transition-all text-left ${
+                    isUnavailable
+                      ? 'bg-red-900/30 border-red-600'
+                      : 'bg-green-900/30 border-green-600'
+                  }`}
+                >
+                  <p className="text-white font-bold text-sm mb-1 capitalize">{ingredient}</p>
                   <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
                     {isUnavailable ? 'Unavailable' : 'Available'}
                   </p>
