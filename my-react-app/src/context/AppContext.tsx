@@ -80,7 +80,9 @@ interface AppContextType {
   inventory: InventoryItem[];
   updateInventory: (id: string, quantity: number) => void;
   unavailableItems: string[];
+  unavailableIngredients: string[];
   setItemAvailability: (itemName: string, available: boolean) => void;
+  setIngredientAvailability: (ingredientName: string, available: boolean) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
 }
@@ -119,6 +121,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     { id: 'INV005', name: 'Salmon', quantity: 18, unit: 'kg', minStock: 8 },
   ]);
   const [unavailableItems, setUnavailableItems] = useState<string[]>([]);
+  const [unavailableIngredients, setUnavailableIngredients] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const login = (email: string, password: string, role: 'client' | 'staff') => {
@@ -231,6 +234,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const setIngredientAvailability = (ingredientName: string, available: boolean) => {
+    setUnavailableIngredients(prev =>
+      available ? prev.filter(name => name !== ingredientName) : [...prev, ingredientName]
+    );
+  };
+
   return (
     <AppContext.Provider value={{
       user,
@@ -254,7 +263,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       inventory,
       updateInventory,
       unavailableItems,
+      unavailableIngredients,
       setItemAvailability,
+      setIngredientAvailability,
       searchQuery,
       setSearchQuery
     }}>

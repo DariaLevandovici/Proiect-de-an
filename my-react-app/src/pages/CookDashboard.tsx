@@ -8,12 +8,22 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 export function CookDashboard() {
-  const { user, logout, orders, updateOrderStatus, unavailableItems, setItemAvailability, inventory, updateInventory } = useApp();
+  const {
+    user,
+    logout,
+    orders,
+    updateOrderStatus,
+    unavailableItems,
+    unavailableIngredients,
+    setItemAvailability,
+    setIngredientAvailability,
+    inventory,
+    updateInventory
+  } = useApp();
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [menuSearchTerm, setMenuSearchTerm] = useState('');
   const [menuFilter, setMenuFilter] = useState('All');
-  const [unavailableIngredients, setUnavailableIngredients] = useState<string[]>([]);
 
   const handleLogout = () => {
     logout();
@@ -39,13 +49,19 @@ export function CookDashboard() {
   const incomingOrders = orders.filter(o => o.status === 'confirmed');
   const preparingOrders = orders.filter(o => o.status === 'in-preparation');
   const lowStockItems = inventory.filter(item => item.quantity <= item.minStock);
+  const itemHasUnavailableIngredient = (item: typeof menuItems[number]) =>
+    item.ingredients.some((ingredient) =>
+      unavailableIngredients.includes(ingredient.toLowerCase())
+    );
 
   // Filter menu items for availability
   const filteredMenuItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(menuSearchTerm.toLowerCase());
+    const isEffectivelyUnavailable =
+      unavailableItems.includes(item.name) || itemHasUnavailableIngredient(item);
     const matchesFilter = menuFilter === 'All' || 
-                         (menuFilter === 'Available' && !unavailableItems.includes(item.name)) ||
-                         (menuFilter === 'Unavailable' && unavailableItems.includes(item.name));
+                         (menuFilter === 'Available' && !isEffectivelyUnavailable) ||
+                         (menuFilter === 'Unavailable' && isEffectivelyUnavailable);
     return matchesSearch && matchesFilter;
   });
 
@@ -54,11 +70,7 @@ export function CookDashboard() {
   ).sort((a, b) => a.localeCompare(b));
 
   const toggleIngredientAvailability = (ingredient: string) => {
-    setUnavailableIngredients((prev) =>
-      prev.includes(ingredient)
-        ? prev.filter((item) => item !== ingredient)
-        : [...prev, ingredient]
-    );
+    setIngredientAvailability(ingredient, unavailableIngredients.includes(ingredient));
   };
 
   return (
@@ -228,11 +240,13 @@ export function CookDashboard() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {filteredMenuItems.map(item => {
-              const isUnavailable = unavailableItems.includes(item.name);
+              const isManuallyUnavailable = unavailableItems.includes(item.name);
+              const isBlockedByIngredient = itemHasUnavailableIngredient(item);
+              const isUnavailable = isManuallyUnavailable || isBlockedByIngredient;
               return (
                 <Button
                   key={item.id}
-                  onClick={() => setItemAvailability(item.name, isUnavailable)}
+                  onClick={() => setItemAvailability(item.name, isManuallyUnavailable)}
                   variant="outline"
                   className={`h-auto p-4 border-2 transition-all text-left ${
                     isUnavailable
@@ -242,7 +256,7 @@ export function CookDashboard() {
                 >
                   <p className="text-white font-bold text-sm mb-1">{item.name}</p>
                   <p className={`text-xs ${isUnavailable ? 'text-red-400' : 'text-green-400'}`}>
-                    {isUnavailable ? 'Unavailable' : 'Available'}
+                    {isBlockedByIngredient ? 'Ingredient unavailable' : isUnavailable ? 'Unavailable' : 'Available'}
                   </p>
                 </Button>
               );
