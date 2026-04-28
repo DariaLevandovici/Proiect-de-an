@@ -14,10 +14,37 @@ export function ManagerDashboard() {
   const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports'>('overview');
+  const [localInventoryItems, setLocalInventoryItems] = useState(inventory);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleAddItemSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const nextItemNumber = localInventoryItems.length + 1;
+    setLocalInventoryItems((prev) => [
+      ...prev,
+      {
+        id: `INV${String(nextItemNumber).padStart(3, '0')}`,
+        name: `New Item ${nextItemNumber}`,
+        quantity: 0,
+        unit: 'pcs',
+        minStock: 5,
+      },
+    ]);
+  };
+
+  const handleLocalInventoryChange = (id: string, quantity: number) => {
+    setLocalInventoryItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
+    );
+
+    if (inventory.some((item) => item.id === id)) {
+      updateInventory(id, quantity);
+    }
   };
 
   // Statistics
@@ -184,16 +211,16 @@ export function ManagerDashboard() {
         )}
 
         {selectedTab === 'inventory' && (
-          <div>
+          <form onSubmit={handleAddItemSubmit}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-white">Inventory Management</h2>
-              <Button className="px-6">
+              <Button type="submit" className="px-6">
                 Add Item
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {inventory.map(item => {
+              {localInventoryItems.map(item => {
                 const isLowStock = item.quantity <= item.minStock;
                 return (
                   <div
@@ -223,14 +250,16 @@ export function ManagerDashboard() {
 
                       <div className="flex gap-2 mt-4">
                         <Button
-                          onClick={() => updateInventory(item.id, item.quantity - 5)}
+                          type="button"
+                          onClick={() => handleLocalInventoryChange(item.id, item.quantity - 5)}
                           variant="destructive"
                           className="flex-1 bg-red-900/30 hover:bg-red-900/50 text-red-400 h-9"
                         >
                           -5
                         </Button>
                         <Button
-                          onClick={() => updateInventory(item.id, item.quantity + 10)}
+                          type="button"
+                          onClick={() => handleLocalInventoryChange(item.id, item.quantity + 10)}
                           variant="success"
                           className="flex-1 h-9"
                         >
@@ -242,7 +271,7 @@ export function ManagerDashboard() {
                 );
               })}
             </div>
-          </div>
+          </form>
         )}
 
         {selectedTab === 'reservations' && (
