@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Search, ShoppingCart, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
@@ -5,6 +6,7 @@ import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 
 export function Header() {
+  const [language, setLanguage] = useState<'RO' | 'EN'>('RO');
   const navigate = useNavigate();
   const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
 
@@ -65,6 +67,15 @@ export function Header() {
 
           {/* Right Side - Search & Login */}
           <div className="flex items-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 px-3 text-xs font-semibold tracking-wide text-gray-300"
+              onClick={() => setLanguage((current) => (current === 'RO' ? 'EN' : 'RO'))}
+            >
+              {language}
+            </Button>
+
             {/* Search Bar */}
             <div className="hidden md:flex items-center gap-2 w-64">
               <Search className="w-4 h-4 text-gray-400 mr-2" />
