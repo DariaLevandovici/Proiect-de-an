@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 
 const mockStaffAccounts = [
   { id: 1, name: 'Andrei Popa', role: 'Waiter' },
@@ -15,6 +16,12 @@ export function ManagerDashboard() {
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports'>('overview');
   const [localInventoryItems, setLocalInventoryItems] = useState(inventory);
+  const [newItemForm, setNewItemForm] = useState({
+    name: '',
+    quantity: '',
+    unit: '',
+    minStock: '',
+  });
 
   const handleLogout = () => {
     logout();
@@ -24,17 +31,32 @@ export function ManagerDashboard() {
   const handleAddItemSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const trimmedName = newItemForm.name.trim();
+    const trimmedUnit = newItemForm.unit.trim();
+    const quantity = Number(newItemForm.quantity);
+    const minStock = Number(newItemForm.minStock);
+
+    if (!trimmedName || !trimmedUnit || Number.isNaN(quantity) || Number.isNaN(minStock)) {
+      return;
+    }
+
     const nextItemNumber = localInventoryItems.length + 1;
     setLocalInventoryItems((prev) => [
       ...prev,
       {
         id: `INV${String(nextItemNumber).padStart(3, '0')}`,
-        name: `New Item ${nextItemNumber}`,
-        quantity: 0,
-        unit: 'pcs',
-        minStock: 5,
+        name: trimmedName,
+        quantity,
+        unit: trimmedUnit,
+        minStock,
       },
     ]);
+    setNewItemForm({
+      name: '',
+      quantity: '',
+      unit: '',
+      minStock: '',
+    });
   };
 
   const handleLocalInventoryChange = (id: string, quantity: number) => {
@@ -217,6 +239,35 @@ export function ManagerDashboard() {
               <Button type="submit" className="px-6">
                 Add Item
               </Button>
+            </div>
+
+            <div className="mb-6 grid grid-cols-1 gap-4 rounded-2xl border border-gray-800 bg-[#242424] p-6 md:grid-cols-2 xl:grid-cols-4">
+              <Input
+                type="text"
+                placeholder="Item name"
+                value={newItemForm.name}
+                onChange={(e) => setNewItemForm((prev) => ({ ...prev, name: e.target.value }))}
+              />
+              <Input
+                type="number"
+                min="0"
+                placeholder="Quantity"
+                value={newItemForm.quantity}
+                onChange={(e) => setNewItemForm((prev) => ({ ...prev, quantity: e.target.value }))}
+              />
+              <Input
+                type="text"
+                placeholder="Unit"
+                value={newItemForm.unit}
+                onChange={(e) => setNewItemForm((prev) => ({ ...prev, unit: e.target.value }))}
+              />
+              <Input
+                type="number"
+                min="0"
+                placeholder="Min stock"
+                value={newItemForm.minStock}
+                onChange={(e) => setNewItemForm((prev) => ({ ...prev, minStock: e.target.value }))}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
