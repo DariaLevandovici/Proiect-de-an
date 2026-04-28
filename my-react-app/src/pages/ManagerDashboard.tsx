@@ -3,15 +3,26 @@ import { useApp } from '../context/AppContext';
 import { LogOut, TrendingUp, Package, Calendar, DollarSign, Users, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export function ManagerDashboard() {
   const { user, logout, orders, reservations, inventory, updateInventory, updateReservationStatus } = useApp();
   const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState<'overview' | 'inventory' | 'reservations' | 'reports'>('overview');
+  const [staffForm, setStaffForm] = useState({
+    name: '',
+    role: 'waiter',
+    email: '',
+  });
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const handleStaffSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
   };
 
   // Statistics
@@ -109,6 +120,55 @@ export function ManagerDashboard() {
         {/* Tab Content */}
         {selectedTab === 'overview' && (
           <div className="space-y-8">
+            <div className="bg-[#242424] rounded-2xl p-6 border border-gray-800">
+              <h2 className="text-2xl font-bold text-white mb-2">Create Staff Account</h2>
+              <p className="text-gray-400 mb-6">Add a new waiter or cook profile.</p>
+
+              <form onSubmit={handleStaffSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-white mb-3">Name</label>
+                  <Input
+                    type="text"
+                    placeholder="Staff name"
+                    value={staffForm.name}
+                    onChange={(e) => setStaffForm({ ...staffForm, name: e.target.value })}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white mb-3">Role</label>
+                  <Select
+                    value={staffForm.role}
+                    onValueChange={(value) => setStaffForm({ ...staffForm, role: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="waiter">Waiter</SelectItem>
+                      <SelectItem value="cook">Cook</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-white mb-3">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="staff@gastroflow.md"
+                    value={staffForm.email}
+                    onChange={(e) => setStaffForm({ ...staffForm, email: e.target.value })}
+                  />
+                </div>
+
+                <div className="flex items-end">
+                  <Button type="submit" className="w-full">
+                    Create Staff
+                  </Button>
+                </div>
+              </form>
+            </div>
+
             {/* Recent Orders */}
             <div>
               <h2 className="text-2xl font-bold text-white mb-6">Recent Orders</h2>
