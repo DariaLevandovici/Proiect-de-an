@@ -1,4 +1,4 @@
-import { Menu, Search, ShoppingCart, User, LogOut } from 'lucide-react';
+import { Search, ShoppingCart, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useApp } from '../../context/AppContext';
 import { Button } from '../../ui/button';
@@ -65,16 +65,6 @@ export function Header() {
 
           {/* Right Side - Search & Login */}
           <div className="flex items-center gap-4">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="md:hidden rounded-xl text-gray-300 hover:text-white"
-              aria-label="Open navigation menu"
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
-
             {/* Search Bar */}
             <div className="hidden md:flex items-center gap-2 w-64">
               <Search className="w-4 h-4 text-gray-400 mr-2" />
