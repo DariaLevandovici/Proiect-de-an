@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 
 export function WaiterBillPage() {
   const navigate = useNavigate();
-  const { orders, tables } = useApp();
+  const { orders, tables, updateTableStatus } = useApp();
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
 
   // Filter orders for dine-in that are ready or delivered
@@ -30,6 +30,10 @@ export function WaiterBillPage() {
       return;
     }
     alert(`Bill generated for Table ${selectedTable}\nTotal: ${grandTotal.toFixed(2)} MDL`);
+    const relatedTable = tables.find((table) => table.number === selectedTable);
+    if (relatedTable) {
+      updateTableStatus(relatedTable.id, 'free');
+    }
     setSelectedTable(null);
   };
 
