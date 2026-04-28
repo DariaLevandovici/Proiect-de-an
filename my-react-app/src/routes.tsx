@@ -15,6 +15,7 @@ import { WaiterBillPage } from './pages/WaiterBillPage';
 import { CookDashboard } from './pages/CookDashboard';
 import { CookRecipesPage } from './pages/CookRecipesPage';
 import { ManagerDashboard } from './pages/ManagerDashboard';
+import { StaffAccountsPage } from './pages/StaffAccountsPage';
 import { FeedbackPage } from './pages/FeedbackPage';
 import { Layout } from './components/layout/Layout';
 
@@ -86,5 +87,9 @@ export const router = createBrowserRouter([
   {
     path: '/dashboard/manager',
     element: <ManagerDashboard />
+  },
+  {
+    path: '/dashboard/manager/staff-accounts',
+    element: <StaffAccountsPage />
   }
 ]);
