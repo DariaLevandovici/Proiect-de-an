@@ -35,15 +35,15 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#1a1a1a]/95 backdrop-blur-sm border-b border-gray-800">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-4 sm:px-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Logo */}
-          <div className="flex items-center gap-8">
-            <Button onClick={() => navigate('/')} variant="ghost" className="h-auto px-0 py-0 hover:bg-transparent">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-8">
+            <Button onClick={() => navigate('/')} variant="ghost" className="h-auto min-w-0 px-0 py-0 hover:bg-transparent">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">G</span>
               </div>
-              <h1 className="text-2xl font-bold text-white">GastroFlow</h1>
+              <h1 className="text-xl font-bold text-white sm:text-2xl">GastroFlow</h1>
             </Button>
             
             {/* Cart */}
@@ -84,7 +84,7 @@ export function Header() {
           </nav>
 
           {/* Right Side - Search & Login */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Button
               type="button"
               variant="outline"
@@ -112,29 +112,40 @@ export function Header() {
                 <Button
                   onClick={() => navigate('/account')}
                   variant="secondary"
-                  className="h-10"
+                  className="h-10 px-3 sm:px-4"
                 >
                   <User className="w-4 h-4" />
-                  <span className="text-sm">{user.name}</span>
+                  <span className="hidden text-sm sm:inline">{user.name}</span>
                 </Button>
                 <Button
                   onClick={handleLogout}
                   variant="outline"
-                  className="flex h-10 min-w-[150px] flex-shrink-0 items-center justify-center px-4"
+                  className="flex h-10 w-10 flex-shrink-0 items-center justify-center px-0 sm:min-w-[150px] sm:px-4"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>{labels.logout}</span>
+                  <span className="hidden sm:inline">{labels.logout}</span>
                 </Button>
               </div>
             ) : (
               <Button 
                 onClick={() => navigate('/login')}
-                className="flex h-10 min-w-[150px] flex-shrink-0 items-center justify-center px-6"
+                className="flex h-10 w-10 flex-shrink-0 items-center justify-center px-0 sm:min-w-[150px] sm:px-6"
               >
                 <User className="w-4 h-4" />
-                <span>{labels.login}</span>
+                <span className="hidden sm:inline">{labels.login}</span>
               </Button>
             )}
+          </div>
+
+          <div className="flex w-full items-center gap-2 rounded-xl border border-gray-700 bg-[#242424] px-4 py-2 md:hidden">
+            <Search className="h-4 w-4 flex-shrink-0 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search dishes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+            />
           </div>
         </div>
       </div>
