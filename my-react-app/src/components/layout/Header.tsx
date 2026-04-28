@@ -10,6 +10,11 @@ export function Header() {
   const navigate = useNavigate();
   const { cart, user, logout, searchQuery, setSearchQuery } = useApp();
 
+  const handleMobileNavigation = (path: string) => {
+    setIsMobileMenuOpen(false);
+    navigate(path);
+  };
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -122,6 +127,39 @@ export function Header() {
             )}
           </div>
         </div>
+
+        {isMobileMenuOpen && (
+          <nav className="mt-4 flex flex-col gap-2 border-t border-gray-800 pt-4 md:hidden">
+            <Button
+              variant="ghost"
+              className="justify-start text-gray-300 hover:text-white"
+              onClick={() => handleMobileNavigation('/reservation')}
+            >
+              Reservation
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start text-gray-300 hover:text-white"
+              onClick={() => handleMobileNavigation('/order')}
+            >
+              Order
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start text-gray-300 hover:text-white"
+              onClick={() => handleMobileNavigation('/menu')}
+            >
+              Meniu
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start text-gray-300 hover:text-white"
+              onClick={() => handleMobileNavigation('/career')}
+            >
+              Career
+            </Button>
+          </nav>
+        )}
       </div>
     </header>
   );
