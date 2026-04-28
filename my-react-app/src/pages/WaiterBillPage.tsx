@@ -30,6 +30,7 @@ export function WaiterBillPage() {
       return;
     }
     alert(`Bill generated for Table ${selectedTable}\nTotal: ${grandTotal.toFixed(2)} MDL`);
+    setSelectedTable(null);
   };
 
   return (
