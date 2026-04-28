@@ -71,7 +71,7 @@ interface AppContextType {
   updateOrderStatus: (id: string, status: Order['status']) => void;
   cancelOrder: (id: string) => void;
   reservations: Reservation[];
-  addReservation: (reservation: Omit<Reservation, 'id' | 'status'>) => void;
+  addReservation: (reservation: Omit<Reservation, 'id' | 'status'>) => boolean;
   updateReservationStatus: (id: string, status: Reservation['status']) => void;
   tables: Table[];
   updateTableStatus: (id: number, status: Table['status']) => void;
@@ -190,6 +190,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
       status: 'pending'
     };
     setReservations(prev => [newReservation, ...prev]);
+
+    let reservedTable = false;
+    setTables(prev => {
+      const firstFreeTable = prev.find(table => table.status === 'free');
+      if (!firstFreeTable) {
+        return prev;
+      }
+
+      reservedTable = true;
+      return prev.map(table =>
+        table.id === firstFreeTable.id ? { ...table, status: 'reserved' } : table
+      );
+    });
+
+    return reservedTable;
   };
 
   const updateReservationStatus = (id: string, status: Reservation['status']) => {
